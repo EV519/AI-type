@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>type.ai — 오늘의 문장을 타이핑하다</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
+:root{--bg:#0b0e14;--panel:#111722;--panel2:#171e2b;--line:#293244;--muted:#8792a6;--text:#f4f6fb;--blue:#8bc5ff;--purple:#bb8cff;--pink:#e99bff;--green:#72e4bf}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% 8%,#1b2340 0,transparent 34%),radial-gradient(ellipse at 0% 85%,#17162e 0,transparent 32%),var(--bg);color:var(--text);font-family:Manrope,'Noto Sans KR',sans-serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 80%)}
+header{height:82px;display:flex;align-items:center;justify-content:space-between;max-width:1420px;margin:auto;padding:0 34px;border-bottom:1px solid #ffffff0b;position:relative;z-index:2}
+.logo{font-size:25px;font-weight:800;letter-spacing:-1.3px}.logo span{color:var(--blue)}nav{display:flex;gap:28px;align-items:center}nav a{font-size:13px;color:#aeb7c8;text-decoration:none}nav a.active,nav a:hover{color:white}.theme{border:1px solid #3a4354;background:#171e2b;color:white;border-radius:30px;padding:10px 15px;cursor:pointer}
+main{max-width:1120px;min-height:calc(100vh - 82px);margin:auto;padding:42px 34px;display:flex;align-items:center;justify-content:center}.hero{display:block;width:100%}.eyebrow{color:var(--blue);font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:18px}.intro h1{font-size:clamp(34px,4vw,57px);line-height:1.22;letter-spacing:-2px;margin:0 0 20px;font-weight:800}.gradient{background:linear-gradient(100deg,var(--blue),var(--purple) 55%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}.intro p{color:#9da8bb;line-height:1.9;font-size:14px;max-width:390px}.primary{border:0;border-radius:14px;padding:15px 21px;margin-top:17px;color:#0b0e14;background:linear-gradient(110deg,#8bc5ff,#c48dff);font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 8px 30px #8e8bff22;transition:transform .2s}.primary:hover{transform:translateY(-2px)}
+.practice{width:100%;max-width:930px;margin:0 auto;border:1px solid #333d50;border-radius:24px;background:linear-gradient(145deg,#1a2130ed,#111720f2);box-shadow:0 28px 90px #0006,inset 0 1px #ffffff0b;padding:24px;position:relative;overflow:hidden}.practice:before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:#8b85ff12;filter:blur(40px);right:-90px;top:-120px;pointer-events:none}.tabs{display:flex;gap:8px;align-items:center;position:relative;flex-wrap:wrap}.tab{border:1px solid transparent;background:transparent;color:#a5afc1;padding:11px 15px;border-radius:30px;cursor:pointer;font-size:13px}.tab.active{color:#eaf4ff;border-color:#668ab9;background:#28354a}.tab-spacer{flex:1}.language-switch{display:flex;gap:3px;padding:3px;border:1px solid #344056;border-radius:24px;background:#0e131c}.lang{border:0;border-radius:20px;padding:7px 10px;background:transparent;color:#9ba8bc;font-size:11px;cursor:pointer}.lang.active{background:#2b3547;color:#fff}.ghost{background:transparent;border:1px solid #394457;border-radius:30px;color:#e0e7f4;padding:10px 13px;cursor:pointer;font-size:12px}
+.length-row{display:flex;align-items:center;gap:14px;margin:18px 3px 14px;position:relative;z-index:1}
+.length-label{font-size:12px;color:#8792a6;letter-spacing:.3px}
+.length-switch{display:flex;gap:5px;padding:4px;border:1px solid #2b3547;border-radius:24px;background:#0e131c}
+.length-option{border:0;border-radius:20px;padding:8px 14px;background:transparent;color:#9ba8bc;font-size:12px;cursor:pointer;transition:background .18s,color .18s}
+.length-option.active{background:#28354a;color:#f4f6fb;box-shadow:inset 0 0 0 1px #526a8c}
+.length-option:hover{color:#fff}
+@media(max-width:480px){.length-row{justify-content:space-between;gap:8px;margin:15px 0 12px}.length-label{font-size:11px}.length-switch{gap:2px}.length-option{padding:8px 11px;font-size:11px}}
+
+.rules-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 2px 4px}
+.rules-label{font-size:11px;color:#748198;margin-right:3px}
+.rule-toggle{border:1px solid #2d3749;background:#111722;color:#8f9db2;border-radius:22px;padding:8px 12px;font:500 11px Manrope,'Noto Sans KR',sans-serif;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+.rule-toggle:hover{border-color:#586b88;color:#e5edfb}
+.rule-toggle.active{background:#26354b;border-color:#6e8fb9;color:#edf5ff;box-shadow:inset 0 0 0 1px #344e70}
+.rule-toggle:focus-visible{outline:2px solid #8bc5ff;outline-offset:2px}
+@media(max-width:480px){.rules-row{gap:6px}.rules-label{width:100%;margin-bottom:1px}.rule-toggle{padding:8px 10px;font-size:10px}}
+
+.news-context{display:block;width:100%;margin:16px 0 0;padding:0;border:0;border-radius:0;background:transparent;min-width:0}
+.news-context[hidden]{display:none!important}
+.news-image-link{display:block;width:100%;max-width:100%;height:auto;overflow:hidden;border-radius:12px;background:transparent;line-height:0}
+.news-thumb{display:block;width:100%;height:auto;min-height:120px;max-height:280px;object-fit:contain;object-position:center;border-radius:12px;transition:opacity .2s}
+.news-image-link:hover .news-thumb{opacity:.94}
+@media(max-width:480px){.news-context{margin-top:12px}.news-thumb{max-height:200px}.news-image-link{border-radius:9px}.news-thumb{border-radius:9px}}
+.typing-stage{margin:24px 0 0;height:184px;min-height:184px;position:relative;border:1px solid #30394a;border-radius:15px;background:linear-gradient(120deg,#0c1119,#121925);box-shadow:none;overflow:hidden;transition:border-color .2s}.typing-stage:focus-within{border-color:#46546b;box-shadow:none}.typing-guide{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px 24px;font:23px/1.9 'Noto Sans KR',sans-serif;letter-spacing:-.2px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:keep-all;color:#667286;pointer-events:none;user-select:none}.typing-guide-content{display:block;width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:keep-all}.typing-guide .typed-correct{color:#f4f6fb;font-weight:600}.typing-guide .typed-wrong{color:#ff8294;text-decoration:underline;text-decoration-color:#ff829466;text-underline-offset:4px}.typing-guide .untyped{color:#657187}.typing-guide .custom-caret{display:inline-block;position:relative;width:0;height:1.13em;vertical-align:-.16em;border-left:2px solid #b9c9e3;margin-left:-1px;margin-right:-1px;animation:typeCaretBlink 1s steps(2,start) infinite}.typing-guide .custom-caret:before{content:'';position:absolute;inset:-2px -2px;background:#b9c9e30d;pointer-events:none}@keyframes typeCaretBlink{0%,49%{opacity:1}50%,100%{opacity:0}}.typing{position:relative;z-index:2;display:block;width:100%;height:184px;text-align:center;min-height:184px;resize:none;overflow:hidden;border:0;border-radius:15px;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:transparent;padding:70px 24px;font:23px/1.9 'Noto Sans KR',sans-serif;letter-spacing:-.2px;outline:none;box-shadow:none;white-space:pre-wrap;overflow-wrap:anywhere;word-break:keep-all}.typing:focus{box-shadow:none}.typing::placeholder{color:transparent}.typing:disabled{cursor:default}.quote-meta{text-align:right;font-size:11px;color:#8e9ab0;margin:8px 4px 0}.typing-help{margin-top:8px;color:#748198;font-size:11px;line-height:1.6}.typing-help kbd{border:1px solid #3d4a60;border-bottom-width:2px;border-radius:5px;padding:2px 5px;color:#c5d0e2;font:11px 'DM Mono',monospace}.typing-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;color:#8792a6;font-size:11px}.mono{font-family:'DM Mono',monospace}.stats{display:flex;align-items:center;justify-content:center;gap:clamp(18px,5vw,58px);margin-top:22px;padding:3px 0}.stat{display:flex;align-items:baseline;gap:7px;background:transparent;border:0;border-radius:0;padding:0}.stat label{display:inline;color:#7f8ba0;font-size:11px;margin:0}.stat strong{font-size:13px;font-family:'DM Mono',monospace;font-weight:500;color:#d5dceb}.stat small{color:#7d8ba2;font-size:11px}
+.section-head{display:flex;align-items:end;justify-content:space-between;margin:48px 0 17px}.section-head h2{font-size:18px;margin:0 0 7px}.section-head p{font-size:12px;color:#8792a6;margin:0}.section-head .hint{font-size:11px;color:#657188}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{display:flex;gap:15px;align-items:center;text-align:left;padding:20px;border:1px solid #283142;background:linear-gradient(140deg,#141a25,#10151d);border-radius:17px;color:white;cursor:pointer;transition:.2s}.card:hover,.card.selected{border-color:#667fb1;transform:translateY(-2px);background:linear-gradient(140deg,#1c2638,#121722)}.card-icon{width:48px;height:48px;flex:0 0 48px;border-radius:15px;display:grid;place-items:center;background:#a16dff22;color:#c8a1ff;font-size:22px}.card:nth-child(2) .card-icon{background:#74bfff20;color:#8bc5ff}.card:nth-child(3) .card-icon{background:#ef9aff1b;color:#ef9aff}.card h3{font-size:13px;margin:0 0 7px}.card p{font-size:11px;color:#8e9ab0;line-height:1.65;margin:0}.arrow{margin-left:auto;color:#9eabc0;font-size:20px}.notice{font-size:11px;color:#647087;line-height:1.8;margin-top:23px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#202a3a;border:1px solid #3a4a64;color:white;padding:12px 18px;border-radius:12px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:10}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){.practice{padding:18px}main{padding:35px 20px;min-height:calc(100vh - 82px)}header{padding:0 20px}.stats{gap:clamp(12px,3vw,24px)}.stat{padding:0}.stat strong{font-size:13px}}
+@media(max-width:480px){header{height:68px}.logo{font-size:22px}main{min-height:calc(100vh - 68px);padding:22px 12px}.practice{border-radius:18px}.tabs{gap:3px}.tab{padding:9px 10px}.typing-stage{min-height:155px}.typing-guide{padding:16px;font-size:20px;justify-content:center;text-align:center}.typing{min-height:184px;height:184px;padding-left:16px;padding-right:16px;font-size:20px}.quote-meta{margin-top:8px}.typing-row{flex-wrap:wrap}.stats{gap:clamp(9px,3vw,15px)}.stat{gap:4px}.stat label,.stat small{font-size:10px}.stat strong{font-size:12px}}
+
+/* Photo-only media for movie/news practice */
+.news-context{display:block!important;width:100%;margin:16px 0 0;padding:0;border:0;border-radius:0;background:transparent;min-width:0}
+.news-context[hidden]{display:none!important}
+.news-image-link{display:block;width:100%;max-width:100%;height:auto;overflow:hidden;border-radius:12px;background:transparent;line-height:0}
+.news-thumb{display:block;width:100%;height:auto;max-height:300px;min-height:120px;object-fit:contain;object-position:center;border-radius:12px;transition:opacity .2s;background:#121925}
+.news-image-link:hover .news-thumb{opacity:.94}
+@media(max-width:480px){.news-context{margin-top:12px}.news-thumb{max-height:200px;min-height:90px}.news-image-link,.news-thumb{border-radius:9px}}
+
+</style>
+</head>
+<body>
+<header><div class="logo">type.ai<span>_</span></div><button class="theme" id="themeBtn">☾ &nbsp; Dark</button></header>
+<main id="home">
+<section class="hero">
+<div class="practice" id="practice">
+<div class="tabs"><button class="tab active" data-mode="movie" data-ko="▣ &nbsp; 영화 대사" data-en="▣ &nbsp; Movie lines">▣ &nbsp; 영화 대사</button><button class="tab" data-mode="news" data-ko="▤ &nbsp; 뉴스 스타일" data-en="▤ &nbsp; News style">▤ &nbsp; 뉴스 스타일</button><button class="tab" data-mode="ai" data-ko="✦ &nbsp; AI 랜덤" data-en="✦ &nbsp; AI random">✦ &nbsp; AI 랜덤</button><span class="tab-spacer"></span><div class="language-switch" aria-label="Language"><button class="lang active" data-lang="ko">한국어</button><button class="lang" data-lang="en">English</button></div><button class="ghost" id="newBtn" data-ko="⟳ &nbsp; 문장 새로 생성" data-en="⟳ &nbsp; New sentence">⟳ &nbsp; 문장 새로 생성</button></div>
+<div class="length-row">
+ <span class="length-label" data-ko="연습 길이" data-en="Length">연습 길이</span>
+ <div class="length-switch" role="group" aria-label="Practice length">
+  <button class="length-option active" data-length="short" data-ko="단문" data-en="Short">단문</button>
+  <button class="length-option" data-length="long" data-ko="장문" data-en="Long">장문</button>
+  <button class="length-option" data-length="words" data-ko="단어" data-en="Words">단어</button>
+ </div>
+</div>
+<div class="rules-row" role="group" aria-label="Typing options">
+ <button type="button" class="rule-toggle" id="ignoreCaseBtn" aria-label="영어 대소문자 무시" title="영어 대소문자 무시" aria-pressed="false">Aa</button>
+ <button type="button" class="rule-toggle" id="ignoreSpecialBtn" aria-label="특수문자 생략" title="특수문자 생략" aria-pressed="false">.,!</button>
+</div>
+<div class="news-context" id="newsContext" hidden>
+ <a class="news-image-link" id="mediaImageLink" href="#" target="_blank" rel="noopener noreferrer" aria-label="원문 이미지 열기">
+  <img class="news-thumb" id="mediaImage" src="" alt="" loading="eager" decoding="async" fetchpriority="high">
+ </a>
+</div>
+<div class="typing-stage" id="typingStage"><div class="typing-guide" id="typingGuide" aria-hidden="true"><span class="typing-guide-content"><span class="untyped">밥은 먹고 다니냐?</span></span></div><textarea class="typing" id="typingInput" aria-label="제시된 문장을 따라 입력하세요" placeholder="" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea></div>
+<div class="typing-row"><span>◷ &nbsp; <span class="mono" id="timer">00:00</span></span><span><span class="mono" id="count">0</span> / <span class="mono" id="total">31</span> <span id="charLabel">자</span></span></div>
+<div class="stats" id="stats"><div class="stat"><label>WPM</label><strong id="wpm">0</strong></div><div class="stat"><label>CPM</label><strong id="cpm">0</strong></div><div class="stat"><label>ACC</label><strong id="accuracy">100</strong><small>%</small></div><div class="stat"><label>PROG</label><strong id="progress">0%</strong></div></div>
+</div>
+</section>
+</main><div class="toast" id="toast"></div>
+<script>
+const bank={
+ ko:{
+  movie:[
+   ["우리는 어둠 속에서도 서로의 작은 빛을 발견할 수 있다.","창작 문장 · 영화풍"],
+   ["끝이라고 생각한 순간에도 이야기는 계속되고 있어.","창작 문장 · 드라마"],
+   ["용기란 두렵지 않은 게 아니라, 두려워도 한 걸음 내딛는 것이다.","창작 문장 · 모험"],
+   ["세상을 바꾸는 건 거대한 약속보다 오늘의 작은 선택일지도 모른다.","창작 문장 · 휴먼"],
+   ["돌아갈 곳이 있다는 사실만으로도 우리는 다시 떠날 수 있다.","창작 문장 · 여행"]
+  ],
+  news:[
+   ["인공지능 기술의 발전으로 일상 속 다양한 서비스가 빠르게 변화하고 있다.","뉴스 스타일 · 기술"],
+   ["지역 사회는 대중교통 개선과 보행 환경 조성을 위한 새로운 계획을 발표했다.","뉴스 스타일 · 사회"],
+   ["전문가들은 디지털 정보를 비판적으로 읽는 능력이 더욱 중요해지고 있다고 강조했다.","뉴스 스타일 · 교육"],
+   ["기후 변화에 대응하기 위해 여러 도시가 에너지 절약 정책을 확대하고 있다.","뉴스 스타일 · 환경"],
+   ["온라인 콘텐츠 이용 시간이 늘면서 건강한 미디어 습관에 대한 관심도 커지고 있다.","뉴스 스타일 · 생활"]
+  ],
+  ai:[
+   ["새로운 것을 배우는 가장 좋은 방법은 작은 호기심을 행동으로 옮기는 것이다.","AI 랜덤 · 성장"],
+   ["바람이 지나간 자리에는 우리가 미처 보지 못했던 풍경이 남아 있었다.","AI 랜덤 · 감성"],
+   ["도시는 밤이 되면 낮과는 전혀 다른 리듬으로 움직이기 시작한다.","AI 랜덤 · 일상"],
+   ["복잡한 문제도 차근차근 나누어 보면 해결의 실마리가 보이기 마련이다.","AI 랜덤 · 생각"],
+   ["미래는 멀리 있는 정답이 아니라 오늘 쌓아 올리는 선택들로 만들어진다.","AI 랜덤 · 영감"]
+  ]
+ },
+ en:{
+  movie:[
+   ["Even in the darkest night, we can find a little light in each other.","Original line · Cinematic"],
+   ["Just when you think the story is over, it finds a way to continue.","Original line · Drama"],
+   ["Courage is not the absence of fear; it is taking one more step despite it.","Original line · Adventure"],
+   ["The world may change through small choices more than grand promises.","Original line · Human story"],
+   ["Knowing there is a place to return to gives us the courage to leave.","Original line · Journey"]
+  ],
+  news:[
+   ["Advances in artificial intelligence are rapidly changing services used in everyday life.","News style · Technology"],
+   ["Local officials announced a new plan to improve public transit and pedestrian safety.","News style · Society"],
+   ["Experts say critical thinking is becoming increasingly important when reading digital information.","News style · Education"],
+   ["Cities around the world are expanding energy-saving policies to respond to climate change.","News style · Environment"],
+   ["As online media use grows, more people are paying attention to healthy digital habits.","News style · Lifestyle"]
+  ],
+  ai:[
+   ["One of the best ways to learn is to turn a small curiosity into action.","Random · Growth"],
+   ["After the wind passed, a view we had never noticed was left behind.","Random · Mood"],
+   ["When night falls, the city begins to move to an entirely different rhythm.","Random · Everyday life"],
+   ["Even a complicated problem becomes clearer when we break it into smaller steps.","Random · Ideas"],
+   ["The future is not a distant answer, but the choices we build today.","Random · Inspiration"]
+  ]
+ }
+};
+
+const lengthBank = {
+ ko: {
+  movie: {
+   short: ["밥은 먹고 다니냐?", "지금까지 이런 맛은 없었다. 이것은 갈비인가 통닭인가.", "어떻게 사랑이 변하니?"],
+   long: ["비 내리는 철길을 달리는 형사는 단서를 붙잡으려 애쓴다. 수사가 길어질수록 진실은 더 멀어진 듯하고, 그의 지친 표정에는 사건을 끝내지 못한 답답함이 쌓여 간다.", "잠복 수사를 위해 시작한 치킨집이 뜻밖에 손님으로 붐비자 형사들은 수사와 장사 사이에서 난감해진다. 허술했던 작전은 예상하지 못한 성공으로 이어지고, 팀은 새로운 문제를 마주한다.", "자연의 소리를 함께 녹음하며 가까워진 두 사람은 시간이 흐르며 서로 다른 마음을 마주한다. 조용한 길에서 나누는 짧은 대화와 침묵은 사랑의 시작과 끝이 얼마나 다를 수 있는지 보여 준다."],
+   words: ["형사", "통닭", "이별"]
+  },
+  news: {
+   short: ["KAI 노조원들이 한화의 경영 참여에 반대하며 서울에서 집회를 열었다.", "강신철 국방부 장관과 주한일본대사가 국방 교류 확대를 논의했다."],
+   long: ["한국항공우주산업 노동조합원들은 한화의 경영 참여에 반대하며 서울 청와대 인근에서 집회를 열고, KAI의 독립경영 보장과 정부의 분명한 입장 표명을 요구했다.", "강신철 국방부 장관은 주한일본대사 미즈시마 고이치와 만나 한반도와 지역 안보 상황을 논의했다. 양측은 한일 국방 교류를 안정적으로 이어가고 관련 현안에 대해 긴밀히 소통하기로 했다."],
+   words: ["KAI 노조", "독립경영", "한화", "국방협력", "안보", "교류"]
+  },
+  ai: {
+   short: ["작은 호기심을 따라가다 보면 예상하지 못한 배움을 만나게 된다.", "매일 조금씩 쌓은 노력이 어느 날 큰 변화를 만들어 낼 수 있다.", "익숙한 길에서 잠시 벗어나면 새로운 풍경을 발견할 수 있다.", "완벽하게 준비될 때까지 기다리지 말고 작은 일부터 시작해 보자.", "잠깐 멈춰 지나온 길을 돌아보는 것도 앞으로 나아가는 방법이다.", "오늘의 작은 선택이 내일의 나를 조금씩 바꿔 놓을 수 있다."],
+   long: ["작은 호기심 하나가 새로운 배움으로 이어질 수 있다. 익숙한 방식에서 잠시 벗어나 질문을 던지고 직접 경험해 보면, 전에는 보이지 않던 가능성이 조금씩 모습을 드러내기 시작한다.", "익숙한 길에서 잠시 벗어나 주변을 천천히 바라보면 평소에는 지나쳤던 장면들이 눈에 들어온다. 때로는 목적지에 빨리 도착하는 것보다 그 과정에서 무엇을 발견했는지가 더 오래 기억에 남는다.", "어려운 문제를 한 번에 해결하려고 애쓰기보다 작은 단계로 나누어 하나씩 살펴보자. 모든 답을 당장 찾을 필요는 없으며, 꾸준히 시도하는 동안 처음에는 보이지 않던 해결의 실마리가 나타날 수 있다.", "매일 반복하는 작은 선택들은 눈에 띄지 않아도 조금씩 쌓인다. 오늘 읽은 한 페이지와 잠깐의 연습, 그리고 다른 사람에게 건넨 친절이 모여 시간이 지난 뒤에는 생각보다 큰 변화를 만들어 낼 수 있다.", "잠시 멈춰서 지금까지 해낸 일을 돌아보는 시간도 앞으로 나아가기 위한 과정이다. 아직 도착하지 못한 곳만 바라보기보다 이미 지나온 길에서 배운 점을 살펴보면 다음 걸음을 더 차분하게 내디딜 수 있다."],
+   words: ["호기심", "성장", "여유", "발견", "생각", "습관", "시작", "변화", "균형", "산책", "영감", "일상"]
+  }
+ },
+ en: {
+  movie: {
+   short: ["Have you been eating?", "Nothing has tasted like this. Is it galbi or fried chicken?", "How can love change?"],
+   long: ["A detective runs along rain-soaked railway tracks, trying to hold on to one more clue. As the investigation drags on, the truth seems farther away, and frustration settles across his tired face.", "A chicken shop opened for an undercover investigation unexpectedly fills with customers, leaving the detectives caught between running a business and solving their case. Their unlikely plan succeeds in ways they never expected.", "Two people grow close while recording the sounds of nature, but time reveals that their feelings have changed in different ways. A quiet conversation and the silence that follows show how far love can travel from its beginning."],
+   words: ["detective", "chicken", "farewell"]
+  },
+  news: {
+   short: ["KAI union members rallied in Seoul against Hanwha's involvement.", "South Korea and Japan discussed expanding defense cooperation."],
+   long: ["Members of the Korea Aerospace Industries union rallied near the presidential office in Seoul, opposing Hanwha's management involvement and calling for KAI's independent management and a clear government position.", "South Korean Defense Minister Kang Shin-chul met Japanese Ambassador Koichi Mizushima to discuss regional security. Both sides agreed to maintain stable defense exchanges and keep communicating on shared concerns."],
+   words: ["KAI union", "independence", "Hanwha", "defense ties", "security", "dialogue"]
+  },
+  ai: {
+   short: ["Small questions can lead to discoveries.", "Take your time, and keep moving forward.", "New paths often begin with curious steps.", "Daily habits can shape the future we imagine.", "Rest can be part of making steady progress.", "Look closely, and ordinary moments may shine."],
+   long: ["A small curiosity can become the beginning of a meaningful discovery. When we step beyond familiar routines, ask questions, and try something for ourselves, possibilities that once seemed invisible can slowly come into view.", "When we leave a familiar path and look around more carefully, ordinary places can reveal details we have never noticed. Reaching a destination quickly is not always as memorable as what we discover along the way.", "Instead of trying to solve a difficult problem all at once, divide it into smaller steps and work through them one by one. You do not need every answer immediately; steady effort often reveals a clue that was difficult to see at first.", "The small choices we repeat each day may not seem important, but they gradually add up. A page read, a few minutes of practice, and a kind word can combine over time to create a change greater than we expected.", "Taking a moment to recognize how far we have come is part of moving forward. Rather than looking only at the place we have not reached, notice what the journey has taught you and use it to take your next step with care."],
+   words: ["curiosity", "growth", "patience", "discovery", "thought", "habit", "beginning", "change", "balance", "journey", "inspiration", "everyday"]
+  }
+ }
+};
+
+// Expanded practice pools: unique cinematic prompts, varied AI topics, and current Korean news summaries.
+lengthBank.ko.news.short = ["KAI 노조원들이 서울에서 한화의 경영 참여에 반대하는 집회를 열었다.", "한일 국방 당국이 지역 안보와 양국 간 교류 확대 방안을 논의했다.", "한일 경제계가 공급망 불안에 함께 대응하고 신시장 개척을 논의했다.", "첫 법정기념일을 맞아 서울 국립중앙박물관에서 한식 대축제가 열렸다.", "시민 100명이 인구 변화와 일자리 정책의 실행 방안을 함께 논의한다.", "한중 전문가들이 한반도 평화와 안정을 위한 전략적 소통을 강조했다.", "노조는 KAI의 독립경영 보장과 정부의 명확한 입장을 요구했다.", "양측은 국방 교류를 안정적으로 이어가고 주요 현안을 계속 소통하기로 했다.", "제33회 한일재계회의에서 양국 기업인들이 경제 협력 확대를 다짐했다.", "축제에서는 전통 음식 만들기와 시식, 한식 기업 홍보 프로그램이 진행됐다.", "경사노위는 시민 토론을 통해 상생 일자리와 평생 일자리 과제를 검토한다.", "한중 대화 참석자들은 긴장 완화와 경제·인적 교류의 중요성을 확인했다.", "서울 집회 참가자들은 한화의 경영 참여와 관련해 우려를 나타냈다.", "국방부 장관과 주한 일본대사는 한반도 정세와 안보 협력 방향을 살폈다.", "한국과 일본은 첨단 산업 공급망에서 상호 협력이 필수라고 밝혔다.", "한식의 날 행사에서는 전통 발효 문화와 푸드테크의 미래를 함께 조명했다.", "시민회의 결과는 앞으로 일자리 정책을 설계하는 기초 자료로 활용될 예정이다.", "전문가들은 한반도 안정에 필요한 한중 간 긴밀한 소통을 촉구했다.", "KAI 조합원들은 독립경영과 정부 차원의 분명한 대응을 거듭 촉구했다.", "한일 양측은 국방 교류를 꾸준히 이어가며 지역 안보 문제를 논의했다.", "양국 경제계는 통상 환경 변화와 에너지 공급망 불안에 함께 대응하기로 했다.", "한식 대축제에는 요리 시연과 쿠킹클래스, 식품 홍보 공간이 마련됐다.", "시민들은 저출생·고령화와 인구 감소가 일자리에 미치는 영향을 논의한다.", "한중 대표단은 한반도 평화와 역내 안정에 전략적 대화가 중요하다고 밝혔다."];
+lengthBank.ko.news.long = ["한국항공우주산업 노조원들은 서울에서 집회를 열고 한화의 경영 참여에 반대하며 회사의 독립경영 보장과 정부의 분명한 입장 표명을 요구했다.", "강신철 국방부 장관은 주한일본대사와 만나 한반도와 지역 안보 상황을 논의했다. 양측은 국방 교류를 안정적으로 이어가고 현안에 대해 긴밀히 소통하기로 했다.", "한일 경제계는 제33회 한일재계회의에서 통상 환경 변화와 에너지 공급망 불안에 공동 대응하고, 양국의 산업 역량을 결합해 새로운 성장 기회를 찾기로 했다.", "정부는 법정기념일 지정 이후 처음 맞는 한식의 날을 기념해 서울 국립중앙박물관에서 행사를 열었다. 축제에서는 전통 음식 체험과 조리 시연, 식품기업 홍보 프로그램이 진행됐다.", "경제사회노동위원회는 인구구조 변화에 따른 일자리 과제를 논의하기 위해 시민 100명과 숙의토론회를 진행한다. 논의 결과는 향후 정책 실행 방안을 만드는 데 활용될 예정이다.", "한국과 중국의 전문가들은 한반도 평화와 안정을 위해 양국 간 전략적 소통을 강화할 필요가 있다고 밝혔다. 참석자들은 긴장 완화와 경제 협력, 인적 교류 확대의 중요성도 논의했다.", "KAI 노조는 한화의 경영 참여가 회사의 독립성과 의사결정에 영향을 줄 수 있다고 우려하며 정부가 명확한 입장을 내고 독립경영을 보장해야 한다고 촉구했다.", "양국 국방 관계자는 한반도 주변의 안보 상황을 점검하고 실무 교류를 꾸준히 이어갈 방안을 논의했다. 대화는 현안이 생길 때 긴밀하게 소통하자는 데 초점을 맞췄다.", "한국경제인협회와 일본경제단체연합회는 산업 공급망의 불확실성과 인구 감소 같은 공통 과제에 함께 대응하고, 양국 기업의 강점을 바탕으로 새로운 시장을 개척하겠다는 뜻을 모았다.", "한식의 날을 맞아 열린 축제에는 전통 음식과 식재료를 소개하는 부스가 마련됐다. 방문객들은 조리 시연과 쿠킹클래스에 참여하며 한식의 문화적 가치와 산업적 가능성을 살펴봤다.", "시민회의에서는 상생 일자리와 평생 일자리 분야의 핵심 과제를 중심으로 구체적인 실행 방법을 논의한다. 제안된 방안은 다음 단계의 사회적 대화와 정책 검토에 참고 자료로 쓰일 계획이다.", "한중 전략대화에 참여한 전문가들은 국제 정세가 복잡해질수록 양국의 의사소통이 중요하다고 강조했다. 경제 협력과 인적 교류를 확대하는 일도 지역 안정에 도움이 될 수 있다고 봤다.", "집회 참가자들은 KAI의 독립경영을 보장하고 경영 참여 문제에 대한 정부 입장을 분명히 해 달라고 요구했다. 노조는 회사의 미래와 의사결정 구조에 영향을 미칠 수 있다는 점을 문제로 제기했다.", "한국과 일본의 국방 당국은 지역 안보에 관한 의견을 나누고 기존 교류를 안정적으로 이어가기로 했다. 양측은 다양한 현안이 생길 때마다 실무 차원의 소통을 이어가기로 했다.", "한일재계회의에 참석한 기업인들은 공급망 변화에 대응하려면 양국 기업의 강점을 결합해야 한다고 강조했다. 공동 성명에는 새 시장과 산업을 개척하고 공통 과제에 함께 대응하겠다는 방향이 담겼다.", "한식대축제는 음식의 맛뿐 아니라 전통과 생활문화의 가치도 알리는 행사로 마련됐다. 현장에서는 전통 음식 체험과 식품기업 홍보, 조리 시연이 진행돼 시민과 외국인 관람객의 참여를 이끌었다.", "인구 변화와 일자리 문제를 다루는 시민회의는 일자리 정책을 구체적인 실행 방안으로 발전시키는 데 목적이 있다. 참가자들은 여러 관점을 나누고 지속 가능한 해결책을 설계할 예정이다.", "한국과 중국의 전문가들은 긴장 완화와 상호 신뢰를 위해 전략적 대화를 이어가야 한다고 강조했다. 참석자들은 한반도의 평화와 안정이 역내 협력에 중요한 조건이라는 데 의견을 모았다."];
+lengthBank.ko.news.words = ["KAI 노조", "국방 교류", "공급망 협력", "한식의 날", "일자리 정책", "한중 대화", "독립경영", "지역 안보", "경제 협력", "전통 음식", "시민회의", "전략 소통", "경영 참여", "안보 현안", "신시장 개척", "푸드테크", "인구 변화", "긴장 완화", "노조 집회", "국방 협력", "산업 역량", "문화유산", "평생 일자리", "상호 신뢰"];
+lengthBank.ko.movie.short.push(...["오래된 골목에 남은 작은 흔적 하나가 사건의 방향을 바꾸기 시작했다.", "주방에 주문이 밀려들자 형사들은 수사보다 요리부터 해결해야 했다.", "두 사람은 녹음기에 남은 바람 소리를 들으며 서로의 마음을 헤아렸다.", "비에 젖은 논길에 남은 발자국은 예상과 다른 곳으로 이어졌다.", "손님이 늘어날수록 작전은 복잡해지고 형사들의 표정은 굳어졌다.", "헤어지는 길에서도 두 사람은 끝내 하지 못한 말을 마음에 남겼다.", "작은 단서를 따라간 형사는 마을 사람들의 엇갈린 증언을 다시 살폈다.", "주문표가 쌓인 가게에서 형사들은 서로 눈짓하며 작전을 이어갔다.", "익숙한 노래가 흘러나오자 두 사람은 함께 걷던 계절을 떠올렸다.", "낡은 수첩 속 기록은 오랫동안 감춰졌던 사건을 다시 흔들어 놓았다.", "작전이 틀어지자 팀원들은 마지막 기회라는 마음으로 한 번 더 움직였다.", "말없이 건넨 녹음 테이프에는 둘이 함께 보낸 하루가 담겨 있었다.", "형사는 비가 그친 길에서 흩어진 단서를 하나씩 다시 맞춰 보았다.", "손님들의 환호가 커질수록 형사들은 자신들이 왜 이곳에 왔는지 잊을 뻔했다.", "창밖의 빗소리를 들으며 두 사람은 서로에게 남은 감정을 천천히 정리했다.", "낯선 목격자의 한마디가 잠잠하던 수사에 새로운 긴장감을 불러왔다.", "주방과 작전실을 오가는 하루 끝에 팀은 예상 밖의 성과를 마주했다.", "계절이 바뀐 뒤에도 한 사람은 예전 녹음 파일을 조용히 다시 들었다.", "사건 현장에 남겨진 작은 자국은 모두가 놓친 질문을 다시 떠올리게 했다.", "복잡한 주문 속에서도 팀원들은 서로의 신호를 읽으며 침착하게 움직였다.", "둘은 같은 풍경을 바라보면서도 서로 다른 미래를 상상하고 있었다.", "수사가 막히자 형사는 처음부터 현장을 다시 살펴보기로 마음먹었다.", "손님이 빠져나간 늦은 밤에야 형사들은 사건의 다음 단계를 논의했다.", "멀어지는 기차 소리를 들으며 두 사람은 함께한 시간을 돌아보았다."]);
+lengthBank.ko.ai.short.push(...["오늘의 작은 연습이 내일의 자신감을 조금씩 키워 준다.", "익숙한 답을 의심하면 새로운 가능성이 보이기 시작한다.", "잠깐 쉬어 가는 시간도 앞으로 나아가는 과정에 포함된다.", "천천히 관찰할수록 평범한 장면에서 다른 의미를 발견한다.", "정답을 서두르기보다 질문을 분명하게 만드는 일이 먼저다.", "배운 내용을 직접 써 보면 기억이 더 오래 남을 수 있다.", "작은 습관은 눈에 띄지 않아도 하루의 방향을 바꾼다.", "처음 해보는 일은 서툴러도 그 자체로 좋은 출발이다.", "서로 다른 의견을 듣는 일은 생각의 범위를 넓혀 준다.", "기록을 남기면 지나간 하루에서 배울 점을 찾기 쉽다.", "한 번에 완성하지 않아도 매일 조금씩 고치면 충분하다.", "궁금한 점을 적어 두면 다음에 무엇을 배울지 선명해진다.", "빠른 선택보다 이유를 이해한 결정이 더 오래 도움이 된다.", "실수한 부분을 살펴보면 다음 시도에서 바꿀 점이 보인다.", "새로운 길을 걸으면 익숙한 동네도 다르게 느껴진다.", "서로 도운 경험은 혼자서는 얻기 어려운 배움을 남긴다.", "복잡한 일은 작은 단계로 나누면 시작하기 쉬워진다.", "꾸준한 연습은 갑작스러운 재능보다 단단한 기반이 된다.", "오늘 발견한 좋은 생각은 짧게라도 메모해 두는 편이 좋다.", "잠시 멈춰 돌아보면 이미 이뤄낸 변화도 확인할 수 있다.", "문제를 다른 각도에서 바라보면 새로운 해결책이 나타난다.", "처음 세운 계획이 바뀌어도 목적을 잊지 않으면 된다.", "주변의 작은 변화에 관심을 두면 배울 기회가 늘어난다.", "자신의 속도를 지키며 계속하는 것이 결국 큰 힘이 된다."]);
+lengthBank.ko.movie.long.push(...["비가 내린 밤의 현장에는 작은 흔적만 남아 있었다. 형사는 여러 사람의 기억이 서로 다르다는 사실을 깨닫고, 처음부터 사건을 다시 살펴보기로 한다.", "잠복근무를 위해 문을 연 가게는 예상과 달리 손님으로 가득 찼다. 형사들은 주문을 처리하면서도 서로 신호를 주고받고, 계획을 이어갈 방법을 찾아야 했다.", "자연의 소리를 녹음하던 두 사람은 함께한 시간이 길어지며 가까워졌다. 하지만 같은 장소를 다시 찾았을 때, 그들이 기억하는 장면과 바라는 미래는 조금씩 달라져 있었다.", "수사가 멈춘 듯한 순간, 오래된 기록 하나가 새로운 가능성을 보여 주었다. 형사는 익숙한 결론에 기대지 않고 주변의 작은 단서를 하나씩 확인하기 시작했다.", "식당이 바빠질수록 작전의 우선순위도 계속 바뀌었다. 팀원들은 웃음을 참으며 손님을 응대했지만, 중요한 순간마다 서로의 판단을 믿어야 했다.", "녹음기에 남은 바람과 파도 소리는 두 사람의 여행을 오래 기억하게 만들었다. 시간이 흐른 뒤 그 소리를 다시 들으면서 한 사람은 지나간 관계를 차분히 받아들였다.", "서로 다른 목격담을 비교하던 형사는 말보다 행동에 남은 차이를 주목했다. 사건의 실마리는 거창한 증거가 아니라 아무도 중요하게 여기지 않았던 사소한 장면에 있었다.", "가게 안에는 손님들의 웃음소리와 주문 소리가 끊이지 않았다. 형사들은 평범한 하루를 연기하면서도 정해진 순간이 오면 망설임 없이 본래의 임무로 돌아가야 했다.", "처음에는 같은 풍경을 즐기던 두 사람이 어느 순간부터 서로 다른 것을 바라보기 시작했다. 조용한 대화와 길어진 침묵 속에서 관계가 변했다는 사실이 서서히 드러났다.", "사건 현장을 다시 찾은 형사는 비가 흔적을 지웠다고 생각했다. 하지만 주변을 자세히 살펴보자 처음에는 지나쳤던 작은 물건이 새로운 질문을 만들어 냈다.", "팀원들은 예상보다 많은 손님과 갑작스러운 상황 변화에 지쳐 갔다. 그래도 각자의 역할을 나누고 서로를 믿으며, 불가능해 보였던 계획을 끝까지 이어 가기로 했다.", "예전에 함께 녹음했던 소리를 다시 들은 사람은 그날의 날씨와 대화를 떠올렸다. 소리는 그대로였지만 기억은 달라져 있었고, 그는 그 차이를 인정할 준비를 했다.", "진술이 엇갈리는 이유를 찾기 위해 형사는 시간과 장소를 표로 정리했다. 흩어진 정보가 한눈에 놓이자 사건을 바라보던 관점도 조금씩 바뀌기 시작했다.", "작전이 시작된 뒤에는 작은 실수도 전체 계획을 흔들 수 있었다. 팀원들은 농담으로 긴장을 풀면서도 각자의 신호와 순서를 다시 확인했다.", "두 사람은 함께 걷던 길을 다시 찾아갔지만, 예전과 똑같은 감정을 되살릴 수는 없었다. 남은 것은 풍경에 대한 기억과 서로에게 배운 것들이었다.", "형사는 마지막으로 현장을 확인하고서야 놓친 단서가 무엇인지 알아차렸다. 오랫동안 쫓던 답은 멀리 있지 않았고, 익숙함 때문에 보이지 않았을 뿐이었다.", "붐비는 가게는 수사팀에게 뜻밖의 기회를 제공했지만 새로운 부담도 안겼다. 형사들은 장사와 작전을 함께 이어 가며, 작은 변화에도 빠르게 대응해야 했다.", "시간이 흐른 뒤 한 사람은 오래된 녹음 파일을 정리하다가 익숙한 웃음소리를 발견했다. 그는 잠시 멈춰 서서 그때의 마음을 떠올린 뒤 파일을 조심스럽게 저장했다."]);
+lengthBank.ko.ai.long.push(...["처음부터 완벽하게 해내려고 하면 시작 자체가 어려워질 수 있다. 작은 목표를 하나 정하고 직접 시도한 뒤, 결과를 살펴보며 다음 단계를 조정하는 편이 더 현실적이다.", "우리는 익숙한 정보일수록 쉽게 믿는 경향이 있다. 중요한 결정을 앞두고는 출처를 확인하고 다른 관점을 비교해 보면 처음에는 보이지 않았던 조건이나 예외를 발견할 수 있다.", "배움은 책이나 화면을 바라보는 순간에만 일어나지 않는다. 직접 설명해 보고, 다른 사람의 질문을 듣고, 틀린 부분을 고치는 과정에서도 이해는 조금씩 깊어진다.", "하루의 경험을 짧게 기록하면 나중에 자신이 어떤 선택을 했는지 돌아보기 쉽다. 기록은 모든 일을 기억하기 위한 도구라기보다 변화와 반복되는 패턴을 발견하는 방법이 될 수 있다.", "여러 일을 동시에 처리하려고 하면 무엇부터 해야 할지 흐려질 수 있다. 해야 할 일을 작게 나누고 가장 중요한 한 가지부터 시작하면 집중할 수 있는 시간을 더 잘 활용할 수 있다.", "새로운 관점을 찾으려면 먼저 내가 당연하다고 생각한 가정을 확인할 필요가 있다. 다른 사람의 경험을 듣고 질문을 바꾸면 같은 문제에서도 이전과 다른 선택지가 나타날 수 있다.", "실수는 시도 자체가 잘못됐다는 뜻이 아니다. 무엇이 예상과 달랐는지 구체적으로 살펴보고 한 번에 한 가지씩 바꾸면 다음 시도에서 배운 점을 확인하기 쉬워진다.", "휴식은 계획을 포기하는 일이 아니라 다시 집중할 여유를 만드는 과정이다. 짧게 몸을 움직이거나 시선을 화면에서 떼어 놓으면 복잡했던 생각을 정리하는 데 도움이 될 수 있다.", "빠르게 결과를 얻는 것만 목표로 삼으면 과정에서 얻는 정보를 놓칠 수 있다. 중간 결과를 점검하고 왜 그런 결과가 나왔는지 이해하는 습관은 다음 문제에도 활용할 수 있는 경험을 만든다.", "새로운 기술을 배울 때는 한 번에 모든 기능을 익히려 하지 않아도 된다. 자주 쓰는 핵심 기능부터 익히고 실제 상황에서 적용해 보면 지식이 조금씩 자연스러운 습관으로 이어진다.", "서로 다른 의견이 부딪힐 때는 누가 옳은지 먼저 정하기보다 각자가 어떤 근거를 바탕으로 말하는지 살펴보는 편이 좋다. 이유를 이해하면 합의할 부분과 더 논의할 부분이 분명해진다.", "작은 변화는 처음에는 눈에 잘 띄지 않지만 시간이 지나면 결과의 차이를 만든다. 매일 같은 시간에 짧게 연습하거나 한 가지를 정리하는 습관은 꾸준함을 유지하는 데 도움이 된다.", "문제를 너무 크게 바라보면 해결이 불가능한 일처럼 느껴질 수 있다. 범위를 좁히고 지금 확인할 수 있는 사실부터 정리하면 다음 행동을 선택하기가 훨씬 쉬워진다.", "계획을 세울 때는 해야 할 일뿐 아니라 예상보다 오래 걸릴 수 있는 부분도 생각해 두는 편이 좋다. 여유 시간을 남겨 두면 갑작스러운 변화가 생겨도 전체 흐름을 유지하기 쉽다.", "정보를 찾는 능력만큼 필요한 정보를 골라내는 능력도 중요하다. 여러 자료가 서로 다른 주장을 할 때는 작성 시점과 근거, 원문 출처를 함께 확인하면 판단의 질을 높일 수 있다.", "잠깐 산책하며 주변 소리와 풍경을 살펴보면 평소에 지나쳤던 세부가 눈에 들어온다. 익숙한 환경을 새롭게 바라보는 경험은 생각을 환기하고 다음 아이디어를 떠올리는 계기가 될 수 있다.", "목표를 이루는 과정에서 속도가 일정하지 않을 수 있다. 어떤 날은 많이 나아가고 어떤 날은 잠시 멈출 수도 있지만, 그때마다 무엇이 도움이 됐는지 살펴보면 자신에게 맞는 방법을 찾을 수 있다.", "다른 사람에게 설명할 수 있을 만큼 이해한 내용은 오래 기억하기 쉽다. 핵심을 자신의 말로 정리하고 짧은 예시를 붙여 보면 어디까지 알고 무엇을 더 확인해야 하는지 드러난다."]);
+lengthBank.ko.movie.words.push(...["목격자", "주방작전", "녹음기", "수첩", "잠복근무", "파도소리", "단서", "주문표", "여운", "현장검증", "팀워크", "침묵", "발자국", "작전실", "기억", "진술", "기차역", "추적"]);
+lengthBank.ko.ai.words.push(...["curiosity", "practice", "perspective", "progress", "patience", "discovery", "focus", "reflection", "habit", "balance", "question", "evidence", "learning", "routine", "creativity", "reasoning", "observation", "effort", "choice", "memory", "planning", "change", "feedback", "insight"]);
+lengthBank.en.news.short = ["KAI union members rallied in Seoul against Hanwha's management involvement.", "South Korean and Japanese defense officials discussed regional security and exchanges.", "Korean and Japanese business groups discussed supply chains and new markets.", "Seoul's National Museum of Korea hosted the first statutory Hansik Day festival.", "One hundred citizens are discussing practical responses to population and job changes.", "Korean and Chinese experts stressed strategic communication for peace on the peninsula.", "The union called for independent management at KAI and a clear government position.", "Both sides agreed to maintain defense exchanges and communicate on shared issues.", "The 33rd Korea-Japan business meeting focused on expanding economic cooperation.", "The festival offered traditional food activities, tastings, and company showcases.", "A labor council is reviewing ways to improve shared and lifelong employment.", "Participants in the Korea-China dialogue highlighted the value of easing tensions.", "Demonstrators in Seoul voiced concern about Hanwha's role in KAI management.", "The defense minister and Japan's ambassador reviewed security on the Korean Peninsula.", "Korea and Japan described supply-chain cooperation as essential for advanced industries.", "Hansik Day events highlighted traditional fermentation and the future of food technology.", "The citizen forum's findings will help shape future employment policy proposals.", "Experts called for closer Korea-China communication to support regional stability.", "KAI union members renewed calls for independent management and clear government action.", "Both sides plan to continue defense exchanges and discuss regional security concerns.", "Business groups agreed to respond together to trade changes and supply-chain uncertainty.", "The Hansik festival featured cooking demonstrations, classes, and food-industry booths.", "Citizens are discussing how low birth rates and ageing affect employment and population.", "Korean and Chinese delegates said strategic dialogue matters for peace and stability."];
+lengthBank.en.news.long = ["Members of the Korea Aerospace Industries union rallied in Seoul, opposing Hanwha's management involvement and demanding independent management and a clear government position.", "South Korea's defense minister met Japan's ambassador to discuss security on the Korean Peninsula and in the region. Both sides agreed to maintain defense exchanges and communicate closely on shared issues.", "At their 33rd meeting, Korean and Japanese business groups agreed to respond jointly to trade changes and supply-chain uncertainty while combining industrial strengths to seek new growth opportunities.", "South Korea marked the first statutory Hansik Day with an event at the National Museum of Korea in Seoul. The festival included traditional food experiences, cooking demonstrations and showcases from food companies.", "The Economic, Social and Labor Council is holding a deliberative forum with one hundred citizens on employment issues linked to demographic change. The findings are intended to inform practical policy proposals.", "Experts from South Korea and China called for stronger strategic communication to support peace and stability on the Korean Peninsula. They also discussed easing tensions, economic cooperation and people-to-people exchanges.", "The KAI union warned that Hanwha's management involvement could affect the company's independence and decision-making. It urged the government to state its position clearly and guarantee independent management.", "Defense officials from both countries reviewed regional security and discussed how to maintain practical exchanges. The talks emphasized closer communication whenever shared concerns arise.", "The Korea-Japan business groups agreed to address supply-chain uncertainty and demographic challenges together, using their industrial strengths to explore new markets and growth opportunities.", "The Hansik Day festival introduced traditional dishes and ingredients through public booths. Visitors joined cooking demonstrations and classes while learning about the cultural value and industrial potential of Korean food.", "The citizen forum is discussing concrete steps for shared and lifelong employment. Its proposals are expected to inform the next stage of social dialogue and future policy reviews.", "Experts in the Korea-China strategic dialogue said communication becomes more important as international affairs grow complex. They also considered how economic cooperation and people-to-people exchange can support regional stability.", "Demonstrators called for guarantees of KAI's independent management and a clear government position on Hanwha's involvement. The union raised concerns about the company's future and decision-making structure.", "South Korean and Japanese defense officials exchanged views on regional security and agreed to sustain existing cooperation. They also planned continued practical communication as new issues emerge.", "Business leaders at the Korea-Japan meeting emphasized combining the strengths of companies in both countries to respond to changing supply chains. Their statement set out plans to explore new industries and address shared challenges.", "The Hansik festival aimed to highlight not only the flavors of Korean food but also its traditions and everyday culture. Cooking demonstrations and food-industry showcases invited participation from local and international visitors.", "The citizens' forum aims to turn discussion about demographic change and employment into practical action. Participants are sharing different perspectives and working toward solutions that can last.", "Experts from South Korea and China said strategic dialogue should continue to ease tensions and build mutual trust. They agreed that peace on the Korean Peninsula is important for wider regional cooperation."];
+lengthBank.en.news.words = ["KAI union", "defense ties", "supply chains", "Hansik Day", "jobs policy", "Korea-China talks", "independent management", "regional security", "economic cooperation", "traditional food", "citizens' forum", "strategic dialogue", "management role", "security issues", "new markets", "food technology", "demographic change", "easing tensions", "union rally", "defense cooperation", "industrial strengths", "cultural heritage", "lifelong work", "mutual trust"];
+lengthBank.en.movie.short.push(...["A small clue in an old alley began to change the direction of the case.", "Orders flooded the kitchen, so the detectives had to cook before investigating.", "They listened to the wind on the recorder and tried to understand each other.", "Footprints in the wet field led somewhere the detectives had not expected.", "As more customers arrived, the plan grew harder and the team grew tense.", "Even on the way home, they carried words they could not bring themselves to say.", "The detective revisited conflicting witness accounts after following a small clue.", "Among the growing order slips, the team kept their plan alive with quiet signals.", "A familiar song brought back memories of a season they had once shared.", "Notes in an old notebook unsettled a case that had been quiet for years.", "When the plan went wrong, the team moved again as if it were their final chance.", "A recording tape held the sounds of an ordinary day the two had shared.", "After the rain stopped, the detective tried to fit the scattered clues together.", "The team's busy restaurant nearly made them forget why they had come there.", "Listening to the rain, the two quietly sorted through the feelings they still had.", "One unfamiliar witness statement brought new tension to the stalled investigation.", "At the end of a day between kitchen and stakeout, the team found an unexpected result.", "Even after the seasons changed, one person quietly replayed an old recording.", "A tiny mark at the scene raised a question everyone else had overlooked.", "Through a rush of orders, the team read each other's signals and stayed calm.", "They looked at the same view but imagined very different futures.", "When the investigation stalled, the detective chose to examine the scene again.", "Only late at night, after the customers left, could the detectives discuss their next step.", "Hearing a train fade into the distance, the two looked back on the time they shared."]);
+lengthBank.en.ai.short.push(...["A little practice today can build confidence for tomorrow.", "Questioning familiar answers can reveal new possibilities.", "Resting for a moment can be part of moving forward.", "Careful observation can reveal meaning in ordinary scenes.", "Clarifying the question often matters more than rushing to answer.", "Trying an idea yourself can help the lesson stay with you.", "Small habits can change the direction of an ordinary day.", "A first attempt can be worthwhile even when it feels awkward.", "Listening to different opinions can widen the way we think.", "Keeping notes makes it easier to learn from an ordinary day.", "Daily improvements matter even when the result is not perfect.", "Writing down questions makes the next step easier to see.", "A decision you understand can help longer than a quick guess.", "Reviewing a mistake can show what to change next time.", "A familiar neighborhood can feel new when you take another route.", "Helping one another creates lessons that are hard to learn alone.", "A complex task becomes easier when divided into smaller steps.", "Steady practice can build a stronger base than a sudden burst of talent.", "A good idea is worth writing down, even in a single sentence.", "Looking back can help you notice changes you have already made.", "A different viewpoint can reveal a solution you had not considered.", "Plans can change as long as you remember what you are working toward.", "Paying attention to small changes can reveal more chances to learn.", "Keeping your own pace can become a powerful strength over time."]);
+lengthBank.en.movie.long.push(...["Only a small trace remained at the rainy scene. The detective realized that people's memories did not match, so he decided to examine the case again from the beginning.", "The shop opened for a stakeout unexpectedly filled with customers. The detectives had to handle orders, exchange quiet signals and find a way to keep their plan moving.", "The two grew close while recording the sounds of nature. When they returned to the same place later, their memories and hopes for the future had begun to diverge.", "Just as the investigation seemed stuck, an old record suggested a new possibility. The detective set aside familiar conclusions and checked each small clue around him.", "As the restaurant grew busier, the team's priorities kept changing. They served customers with straight faces, yet still had to trust one another when the critical moment arrived.", "The wind and surf on a recording helped two people remember their trip. Years later, one of them replayed the sounds and began to accept the relationship they had left behind.", "Comparing conflicting witness accounts, the detective focused on differences in behavior rather than dramatic statements. The key was hidden in a detail everyone had dismissed as ordinary.", "Laughter and orders filled the restaurant. The detectives acted like ordinary workers, but when the moment came, they had to return to their real mission without hesitation.", "Two people once enjoyed the same scenery together, yet gradually began looking for different things. Their changing relationship appeared through quiet conversations and longer silences.", "The detective returned to the scene and thought the rain had erased every trace. A closer look revealed a small object that raised a question he had missed before.", "The team grew tired of the crowded shop and unexpected changes. Still, they divided the work, trusted one another and decided to carry the unlikely plan to the end.", "Listening again to a sound they had recorded together, one person remembered the weather and conversation from that day. The audio was unchanged, but the memory had shifted.", "To understand the conflicting accounts, the detective organized times and places in a table. Seeing the details together slowly changed the way he viewed the case.", "After the operation began, even a small mistake could disturb the entire plan. The team eased the tension with jokes but repeatedly checked their signals and timing.", "The two returned to a familiar path, but they could not restore exactly what they once felt. What remained was a memory of the landscape and what they had learned from each other.", "Only after one final visit did the detective realize which clue he had missed. The answer had never been far away; familiarity had simply made it difficult to see.", "The busy shop offered the team an unexpected opportunity as well as a new burden. They had to run the business and the operation while reacting quickly to every change.", "While sorting old recordings, one person found a familiar laugh. He paused to remember how he felt back then, then carefully saved the file."]);
+lengthBank.en.ai.long.push(...["Trying to do everything perfectly from the beginning can make it hard to start. Choose one small goal, test it in practice, and adjust the next step after looking at the result.", "We often trust information that feels familiar. Before making an important decision, check the source and compare other viewpoints; this can reveal conditions or exceptions you did not notice at first.", "Learning does not happen only while looking at a book or screen. Explaining an idea, hearing someone else's question, and correcting a mistake can all make understanding deeper over time.", "Keeping a short record of the day makes it easier to look back at the choices you made. Notes are not just for remembering everything; they can help reveal change and recurring patterns.", "When you try to handle too many tasks at once, it becomes difficult to see what matters most. Divide the work into small steps and begin with the single most important one.", "Finding another perspective starts with checking the assumptions you take for granted. Hearing another person's experience and changing the question can reveal options you had not considered.", "A mistake does not mean that trying was wrong. Identify what differed from your expectation and change one thing at a time so you can see what the next attempt teaches you.", "Rest is not the same as abandoning a plan; it can create space for renewed attention. Moving briefly or looking away from a screen may help organize thoughts that felt crowded.", "When speed is the only goal, useful information from the process can be missed. Reviewing the result and understanding why it happened creates experience you can reuse on the next problem.", "You do not need to master every feature when learning a new tool. Begin with the functions you use most and apply them in real situations until the knowledge becomes a natural habit.", "When opinions conflict, it can help to examine the reasons behind each view before deciding who is right. Understanding those reasons makes areas of agreement and questions for further discussion clearer.", "Small changes may be hard to see at first, but they can create meaningful differences over time. A short daily practice or a simple organizing habit can help you stay consistent.", "A problem can feel impossible when you look at it as one huge task. Narrow the scope and organize the facts you can check now; choosing the next action then becomes much easier.", "A plan should include not only the tasks to complete but also the parts that may take longer than expected. Leaving some room helps preserve the overall direction when something changes.", "The ability to select useful information is as important as the ability to find it. When sources disagree, check the publication date, evidence, and original source before reaching a conclusion.", "A short walk can make unnoticed details in familiar places stand out. Seeing an ordinary environment in a new way can refresh your thinking and help the next idea emerge.", "Progress does not always move at a steady speed. Some days bring a big step and others require a pause, but reviewing what helped can reveal a method that suits you.", "Ideas are often easier to remember when you can explain them to someone else. Summarize the main point in your own words and add a short example to reveal what you know and what needs review."]);
+lengthBank.en.movie.words.push(...["witness", "kitchen plan", "recorder", "notebook", "stakeout", "surf", "clue", "order slip", "afterglow", "inspection", "teamwork", "silence", "footprint", "operation", "memory", "testimony", "station", "pursuit"]);
+lengthBank.en.ai.words.push(...["curiosity", "practice", "perspective", "progress", "patience", "discovery", "focus", "reflection", "habit", "balance", "question", "evidence", "learning", "routine", "creativity", "reasoning", "observation", "effort", "choice", "memory", "planning", "change", "feedback", "insight"]);
+function getCurrentItems(){
+ if(lengthMode==='short'||lengthMode==='long'||lengthMode==='words'){
+  return lengthBank[lang][mode][lengthMode].map(text=>[text,'']);
+ }
+ return bank[lang][mode];
+}
+
+let mode='movie', lang='ko', lengthMode='short', current=0, startedAt=null, interval=null, done=false, best=0, nextTimeout=null, ignoreCase=false, ignoreSpecial=false;
+const $=id=>document.getElementById(id);
+
+function effectiveTarget(text){
+ if(!ignoreSpecial)return text;
+ // Remove punctuation/symbols from the required text while keeping letters, numbers and spaces.
+ return Array.from(text).filter(ch=>!(/[\p{P}\p{S}]/u.test(ch))).join('');
+}
+function charMatches(inputChar,targetChar){
+ if(ignoreCase)return String(inputChar).toLocaleLowerCase()===String(targetChar).toLocaleLowerCase();
+ return inputChar===targetChar;
+}
+function syncRuleButtons(){
+ const caseBtn=$('ignoreCaseBtn'),specialBtn=$('ignoreSpecialBtn');
+ caseBtn.classList.toggle('active',ignoreCase);caseBtn.setAttribute('aria-pressed',String(ignoreCase));
+ specialBtn.classList.toggle('active',ignoreSpecial);specialBtn.setAttribute('aria-pressed',String(ignoreSpecial));
+}
+
+const sentenceDecks = new Map();
+function pickIndex(){
+ const arr=getCurrentItems();
+ const key=lang+'|'+mode+'|'+lengthMode;
+ let deck=sentenceDecks.get(key);
+ if(!deck||deck.length===0){
+  deck=Array.from({length:arr.length},(_,i)=>i);
+  // Do not repeat the current sentence at the beginning of a new cycle.
+  if(current>=0&&deck.length>1)deck=deck.filter(i=>i!==current);
+  for(let i=deck.length-1;i>0;i--){
+   const j=Math.floor(Math.random()*(i+1));
+   [deck[i],deck[j]]=[deck[j],deck[i]];
+  }
+ }
+ current=deck.pop();
+ sentenceDecks.set(key,deck);
+ return current;
+}
+function renderGuide(val,target){
+ const guide=$('typingGuide');let html='';const length=Math.max(target.length,val.length);
+ for(let i=0;i<=length;i++){
+  if(i===val.length)html+='<span class="custom-caret" aria-hidden="true"></span>';
+  if(i===length)break;
+  const hasTyped=i<val.length;
+  const ch=hasTyped?val[i]:target[i];
+  const cls=hasTyped?(charMatches(val[i],target[i])?'typed-correct':'typed-wrong'):'untyped';
+  html+='<span class="'+cls+'">'+escapeHtml(ch)+'</span>';
+ }
+ guide.innerHTML='<span class="typing-guide-content">'+(html||'<span class="custom-caret" aria-hidden="true"></span>')+'</span>';
+}
+function escapeHtml(ch){return ch==='&'?'&amp;':ch==='<'?'&lt;':ch==='>'?'&gt;':ch==='"'?'&quot;':ch==="'"?'&#39;':ch===' '?' ':ch==='\n'?'<br>':ch}
+function layoutTypingStage(){const stage=$('typingStage'),ta=$('typingInput'),content=$('typingGuide').querySelector('.typing-guide-content');if(!content)return;stage.style.height='auto';ta.style.height='auto';const textHeight=Math.ceil(content.getBoundingClientRect().height);const stageHeight=Math.max(184,textHeight+48);stage.style.height=stageHeight+'px';stage.style.minHeight=stageHeight+'px';ta.style.height=stageHeight+'px';const verticalPad=Math.max(18,(stageHeight-textHeight)/2);ta.style.paddingTop=verticalPad+'px';ta.style.paddingBottom=verticalPad+'px';}
+function updateLanguageUI(){
+ // The language toggle changes only the typing sentence. Keep the surrounding UI in Korean.
+ document.querySelectorAll('.lang').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+ $('charLabel').textContent='자';
+ $('typingInput').placeholder='';
+ $('typingInput').setAttribute('aria-label','제시된 문장을 따라 입력하세요');
+ $('wpm').parentElement.querySelector('label').textContent='WPM';
+ $('accuracy').parentElement.querySelector('label').textContent='ACC';
+ $('progress').parentElement.querySelector('label').textContent='PROG';
+}
+
+const mediaPool = {
+ movie: [
+  {
+   src: "https://m.media-amazon.com/images/M/MV5BZWI3ODJjMGEtMDY5Yy00ODhhLTlkMmZiMzMxNWZhXkEyXkFqcGc%40._V1_FMjpg_UX1000_.jpg",
+   fallback: "https://ca-times.brightspotcdn.com/dims4/default/3beb0c9/2147483647/strip/true/crop/890x584%2B0%2B0/resize/1024x672%21/quality/80/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fdc%2F5d%2F694a468a431f95a612a11ea54f6c%2Fla-ca-memories-of-murder-movie-466.JPG",
+   href: "https://www.yna.co.kr/view/AKR20160608177500797",
+   alt: "영화 살인의 추억 장면"
+  },
+  {
+   src: "https://web2-cf-image.cjenm.com/resize/1344x756/public/share/metamng/programs/extremejob-movie-002-01.jpg?v=1679468009",
+   fallback: "https://cgeimage.commutil.kr/phpwas/restmb_allidxmake.php?idx=3&nmt=30&pp=002&simg=20190209030615068675796a9480c11521222171.jpg",
+   href: "https://www.cjenm.com/ko/featured-contents/%EA%B7%B9%ED%95%9C%EC%A7%81%EC%97%85/",
+   alt: "영화 극한직업 장면"
+  },
+  {
+   src: "https://prettypictures.fr/uploads/2012/11/One_Fine_Spring_day_photo3-640x418.jpg",
+   fallback: "https://prettypictures.fr/uploads/2012/11/One_Fine_Spring_day_photo3-640x418.jpg",
+   href: "https://tv.jtbc.co.kr/clip/pr10010791/pm10048427/vo10233623/view",
+   alt: "영화 봄날은 간다 장면"
+  }
+ ],
+ news: [
+  {
+   src: "https://img1.newsis.com/2026/10/20/NISI20261020_0021496848_web.jpg?rnd=20261020145151",
+   href: "https://www.newsis.com/view/NISI20261020_0021496848",
+   alt: "KAI 노조원들의 서울 집회 사진"
+  },
+  {
+   src: "https://i3n.news1.kr/system/photos/2026/10/19/8166891/high.jpg",
+   fallback: "https://img7.yna.co.kr/etc/inner/EN/2024/11/08/AEN20241108007700315_01_i_P4.jpg",
+   href: "https://www.news1.kr/diplomacy/defense-diplomacy/6324635",
+   alt: "한일 국방 교류 관련 사진"
+  },
+  {
+   src: "https://img6.yna.co.kr/etc/inner/KR/2026/10/23/AKR20261023046951001_01_i_P4.jpg",
+   fallback: "https://cdnph.upi.com/svc/sv/upi_com/7961787614060/2026/1/9d1e54cf62546c8d69114c94585886ef/South-Korea-adds-292000-payroll-jobs-but-youth-decline-continues.jpg",
+   href: "https://www.yna.co.kr/view/AKR20261023046951001",
+   alt: "한일재계회의 대표단 접견 사진"
+  },
+  {
+   src: "https://img6.yna.co.kr/etc/inner/KR/2026/10/24/AKR20261024036300030_01_i_P4.jpg",
+   fallback: "https://www.thinkfood.co.kr/news/photo/202511/103957_137052_484.jpg",
+   href: "https://www.yna.co.kr/view/AKR20261024036300030",
+   alt: "한식의 날 행사 사진"
+  },
+  {
+   src: "https://img6.yna.co.kr/etc/inner/KR/2026/10/23/AKR20261023058900530_01_i_P4.jpg",
+   fallback: "https://cdnph.upi.com/svc/sv/upi_com/7961787614060/2026/1/9d1e54cf62546c8d69114c94585886ef/South-Korea-adds-292000-payroll-jobs-but-youth-decline-continues.jpg",
+   href: "https://www.yna.co.kr/view/AKR20261023058900530",
+   alt: "인구 변화와 일자리 시민회의 관련 사진"
+  },
+  {
+   src: "https://img6.yna.co.kr/etc/inner/KR/2026/10/23/AKR20261023159300504_01_i_P4.jpg",
+   fallback: "https://eng.mod.gov.cn/2025xb/N/T/_attachment/2025/11/02/16419259_95346eef94f9884a69dde774edd82e9e.jpg",
+   href: "https://www.yna.co.kr/view/AKR20261023159300504",
+   alt: "한중 전략대화 관련 사진"
+  }
+ ]
+};
+function proxiedImageUrl(url){
+ // Proxy the image server-side to avoid origin hotlink restrictions in the embedded preview.
+ return 'https://images.weserv.nl/?url='+encodeURIComponent(url)+'&w=1200&output=jpg';
+}
+function renderNewsContext(){
+ const card=$('newsContext'),img=$('mediaImage'),link=$('mediaImageLink');
+ if(!card||!img||!link)return;
+ if(mode==='ai'){card.hidden=true;return;}
+ const pool=mediaPool[mode];
+ if(!pool||!pool.length){card.hidden=true;return;}
+ let mediaIndex=((current%pool.length)+pool.length)%pool.length;
+ const media=pool[mediaIndex];
+ card.hidden=false;
+ link.href=media.href;
+ img.alt=media.alt||'';
+ img.referrerPolicy='no-referrer';
+ img.style.display='block';
+ const candidates=[proxiedImageUrl(media.src),media.src];
+ if(media.fallback && media.fallback!==media.src){candidates.push(proxiedImageUrl(media.fallback),media.fallback);}
+ let attempt=0;
+ img.onerror=function(){
+   attempt++;
+   if(attempt<candidates.length){this.src=candidates[attempt];}
+   else {this.style.display='none'; const card=document.getElementById('newsContext'); if(card)card.dataset.imageUnavailable='true';}
+ };
+ img.src=candidates[0];
+}
+
+function loadQuote(random=true){clearTimeout(nextTimeout);if(random)pickIndex();syncRuleButtons();renderNewsContext();const q=getCurrentItems()[current],target=effectiveTarget(q[0]);$('total').textContent=target.length;$('typingInput').value='';$('typingInput').disabled=false;$('typingStage').style.height='184px';$('typingStage').style.minHeight='184px';$('typingInput').style.height='184px';renderGuide('',target);layoutTypingStage();startedAt=null;done=false;clearInterval(interval);interval=null;$('timer').textContent='00:00';$('count').textContent='0';$('wpm').textContent='0';$('cpm').textContent='0';$('accuracy').textContent='100';$('progress').textContent='0%'}
+function setMode(next){mode=next;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));current=-1;loadQuote(true);showToast(({movie:'영화 대사를 선택했어요.',news:'뉴스 스타일 문장을 선택했어요.',ai:'랜덤 문장을 선택했어요.'}[mode]))}
+function setLanguage(next){if(lang===next)return;lang=next;current=-1;updateLanguageUI();loadQuote(true);}
+function elapsed(){return startedAt?Math.max(1,Math.floor((Date.now()-startedAt)/1000)):0}
+function tick(){let s=elapsed();$('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+$('typingInput').addEventListener('input',()=>{if(done)return;const val=$('typingInput').value,target=effectiveTarget(getCurrentItems()[current][0]);if(val.length&&!startedAt){startedAt=Date.now();interval=setInterval(tick,250)}renderGuide(val,target);let correct=0;for(let i=0;i<Math.min(val.length,target.length);i++)if(charMatches(val[i],target[i]))correct++;const accuracy=val.length?Math.round(correct/val.length*100):100;const progress=Math.min(100,Math.round(val.length/target.length*100));$('count').textContent=val.length;$('accuracy').textContent=accuracy;$('progress').textContent=progress+'%';$('wpm').textContent=startedAt?Math.round((val.length/5)/((Date.now()-startedAt)/60000)):0;$('cpm').textContent=startedAt?Math.round(val.length/((Date.now()-startedAt)/60000)):0;layoutTypingStage();/* Do not advance immediately when the target is complete. */});
+$('typingInput').addEventListener('keydown',e=>{
+ if(done)return;
+ const target=effectiveTarget(getCurrentItems()[current][0]);
+ const val=$('typingInput').value;
+
+ // Once the target number of characters has been entered, the next
+ // ordinary key press advances even if some characters were mistyped.
+ // This intentionally handles Korean IME keys such as "Process"/"Hangul" too.
+ if(val.length>=target.length){
+  const ignoredKeys=['Shift','Control','Alt','Meta','CapsLock','Tab','Escape','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','PageUp','PageDown'];
+  if(!ignoredKeys.includes(e.key)){
+   e.preventDefault();
+   finish(true);
+  }
+  return;
+ }
+
+ // Enter submits an unfinished attempt; do not insert a newline into the typing area.
+ if(e.key==='Enter'){
+  e.preventDefault();
+  showToast(lang==='ko'?'문장을 끝까지 입력한 뒤 다음 키를 눌러주세요.':'Finish the sentence, then press another key to continue.');
+ }
+});
+function finish(exact=false){if(done)return;done=true;clearInterval(interval);tick();$('typingInput').disabled=true;const val=$('typingInput').value,target=effectiveTarget(getCurrentItems()[current][0]);renderGuide(val,target);let correct=0;for(let i=0;i<Math.min(val.length,target.length);i++)if(charMatches(val[i],target[i]))correct++;const acc=val.length?Math.round(correct/val.length*100):0;const wpm=Math.round((val.length/5)/(Math.max(1,elapsed())/60));$('wpm').textContent=wpm;$('cpm').textContent=Math.round(val.length/(Math.max(1,Date.now()-startedAt)/60000));$('accuracy').textContent=acc;$('progress').textContent=Math.min(100,Math.round(val.length/target.length*100))+'%';nextTimeout=setTimeout(()=>{loadQuote(true);$('typingInput').focus()},exact?120:650)}
+function showToast(s){$('toast').textContent=s;$('toast').classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>$('toast').classList.remove('show'),2400)}
+
+$('ignoreCaseBtn').addEventListener('click',()=>{
+ ignoreCase=!ignoreCase;syncRuleButtons();loadQuote(false);$('typingInput').focus();
+ showToast(ignoreCase?'대소문자 구분을 무시해.':'대소문자를 구분해.');
+});
+$('ignoreSpecialBtn').addEventListener('click',()=>{
+ ignoreSpecial=!ignoreSpecial;syncRuleButtons();loadQuote(false);$('typingInput').focus();
+ showToast(ignoreSpecial?'특수문자 입력을 생략해.':'특수문자 입력을 다시 적용해.');
+});
+document.querySelectorAll('.length-option').forEach(b=>b.addEventListener('click',()=>{
+ lengthMode=b.dataset.length;
+ document.querySelectorAll('.length-option').forEach(x=>x.classList.toggle('active',x.dataset.length===lengthMode));
+ current=-1;loadQuote(true);
+ showToast(({short:'단문 연습을 선택했어요.',long:'장문 연습을 선택했어요.',words:'단어 연습을 선택했어요.'}[lengthMode]));
+ $('typingInput').focus();
+}));
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));document.querySelectorAll('.lang').forEach(b=>b.addEventListener('click',()=>setLanguage(b.dataset.lang)));$('newBtn').addEventListener('click',()=>loadQuote(true));
+$('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('light');const light=document.body.classList.contains('light');$('themeBtn').textContent=light?'☀  Light':'☾  Dark';document.body.style.setProperty('--bg',light?'#edf1f8':'#0b0e14');document.body.style.setProperty('--text',light?'#182032':'#f4f6fb');if(light){document.body.style.background='radial-gradient(ellipse at 75% 8%,#d8dfff 0,transparent 34%),#edf1f8';document.querySelectorAll('.practice,.card,.typing-stage').forEach(e=>{e.dataset.oldbg=e.style.background;e.style.background='#ffffffcc';e.style.color='#182032'});$('typingStage').style.background='#fff';$('typingInput').style.background='transparent';$('typingGuide').style.color='#9ba4b5';document.querySelectorAll('.typed-correct').forEach(e=>e.style.color='#182032')}else{document.body.style.background='radial-gradient(ellipse at 75% 8%,#1b2340 0,transparent 34%),radial-gradient(ellipse at 0% 85%,#17162e 0,transparent 32%),var(--bg)';document.querySelectorAll('.practice,.card,.typing-stage').forEach(e=>{e.style.background='';e.style.color=''});$('typingStage').style.background='';$('typingInput').style.background='transparent';$('typingGuide').style.color='';document.querySelectorAll('.typed-correct').forEach(e=>e.style.color='')}});
+try {
+ updateLanguageUI();syncRuleButtons();loadQuote(false);
+} catch (error) {
+ console.error('type.ai initialization failed:', error);
+ const stage=document.getElementById('typingStage');
+ if(stage) {
+  stage.innerHTML='<div style="padding:24px;color:#ff9aa9;text-align:center;font:14px/1.7 sans-serif">페이지를 초기화하지 못했어요. 새로고침하거나 HTML 파일을 다시 열어 주세요.</div>';
+ }
+}
+</script>
+</body></html>
