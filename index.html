@@ -44,10 +44,10 @@ main{max-width:1120px;min-height:calc(100vh - 82px);margin:auto;padding:42px 34p
 /* Photo-only media for movie/news practice */
 .news-context{display:block!important;width:100%;margin:12px 0 0;padding:0;border:0;border-radius:0;background:transparent;min-width:0}
 .news-context[hidden]{display:none!important}
-.news-image-link{display:block;width:100%;max-width:100%;height:auto;overflow:hidden;border-radius:12px;background:transparent;line-height:0}
-.news-thumb{display:block;width:100%;height:auto;max-height:190px;object-fit:contain;object-position:center;border-radius:12px;transition:opacity .2s;background:#121925}
+.news-image-link{display:block;width:100%;max-width:760px;aspect-ratio:2.65/1;height:auto;margin:0 auto;overflow:hidden;border-radius:14px;background:transparent;line-height:0}
+.news-thumb{display:block;width:100%;height:100%;max-height:none;min-height:0;object-fit:cover;object-position:center;border-radius:14px;transition:opacity .2s;background:#e8e4da}
 .news-image-link:hover .news-thumb{opacity:.94}
-@media(max-width:480px){.news-context{margin-top:10px}.news-image-link{max-width:100%}.news-thumb{max-height:130px}.news-image-link,.news-thumb{border-radius:9px}}
+@media(max-width:480px){.news-context{margin-top:12px}.news-image-link{max-width:100%;aspect-ratio:2.2/1}.news-thumb{max-height:none}.news-image-link,.news-thumb{border-radius:10px}}
 
 
 /* type.ai redesign: clean minimal + editorial news + warm illustration accents + card metrics */
@@ -267,8 +267,8 @@ const lengthBank = {
    words: ["형사", "통닭", "이별"]
   },
   news: {
-   short: ["KAI 노조원들이 한화의 경영 참여에 반대하며 서울에서 집회를 열었다.", "강신철 국방부 장관과 주한일본대사가 국방 교류 확대를 논의했다."],
-   long: ["한국항공우주산업 노동조합원들은 한화의 경영 참여에 반대하며 서울 청와대 인근에서 집회를 열고, KAI의 독립경영 보장과 정부의 분명한 입장 표명을 요구했다.", "강신철 국방부 장관은 주한일본대사 미즈시마 고이치와 만나 한반도와 지역 안보 상황을 논의했다. 양측은 한일 국방 교류를 안정적으로 이어가고 관련 현안에 대해 긴밀히 소통하기로 했다."],
+   short: ["KAI 노조원들이 한화의 경영 참여에 반대하며 서울에서 집회를 열었다.","한국과 일본의 국방 당국이 지역 안보와 국방 교류 확대 방안을 논의했다.","한일 경제계는 공급망 불안에 공동 대응하고 새로운 성장 기회를 찾기로 했다.","서울 국립중앙박물관에서 한식의 날을 기념하는 축제와 전통 음식 행사가 열렸다.","시민들이 인구 변화와 일자리 정책의 실행 방안을 논의하는 토론회에 참여했다.","한중 전문가들은 한반도 평화와 역내 안정을 위한 전략적 소통을 강조했다."],
+   long: ["한국항공우주산업 노조원들은 서울에서 집회를 열고 한화의 경영 참여에 반대했다. 이들은 회사의 독립경영 보장과 정부의 분명한 입장 표명을 요구했다.","한국 국방부 장관과 주한 일본대사는 한반도와 지역 안보 상황을 논의했다. 양측은 국방 교류를 안정적으로 이어가고 주요 현안에 긴밀히 소통하기로 했다.","한일 경제계는 공급망 불안과 통상 환경 변화에 함께 대응하기로 했다. 양국 기업은 산업 역량을 결합해 새로운 시장과 성장 기회를 찾는 방안을 논의했다.","한식의 날을 맞아 서울 국립중앙박물관에서 전통 음식과 식문화를 소개하는 행사가 열렸다. 방문객들은 음식 체험과 조리 시연을 통해 한식의 문화적 가치와 산업적 가능성을 살펴봤다.","인구구조 변화에 따른 일자리 과제를 논의하기 위해 시민 참여형 토론회가 마련됐다. 참가자들은 상생 일자리와 평생 일자리 등 구체적인 정책 실행 방안을 검토했다.","한국과 중국의 전문가들은 한반도 평화와 안정을 위해 전략적 대화를 이어갈 필요가 있다고 밝혔다. 참석자들은 긴장 완화와 경제 협력, 인적 교류의 중요성도 논의했다."],
    words: ["KAI 노조", "독립경영", "한화", "국방협력", "안보", "교류"]
   },
   ai: {
@@ -284,8 +284,8 @@ const lengthBank = {
    words: ["detective", "chicken", "farewell"]
   },
   news: {
-   short: ["KAI union members rallied in Seoul against Hanwha's involvement.", "South Korea and Japan discussed expanding defense cooperation."],
-   long: ["Members of the Korea Aerospace Industries union rallied near the presidential office in Seoul, opposing Hanwha's management involvement and calling for KAI's independent management and a clear government position.", "South Korean Defense Minister Kang Shin-chul met Japanese Ambassador Koichi Mizushima to discuss regional security. Both sides agreed to maintain stable defense exchanges and keep communicating on shared concerns."],
+   short: ["KAI union members rallied in Seoul against Hanwha's management involvement.","South Korean and Japanese defense officials discussed regional security and exchanges.","Korean and Japanese business groups discussed supply-chain cooperation and new markets.","A Seoul festival marked Hansik Day with events celebrating Korean food culture.","Citizens joined a forum on jobs and the effects of demographic change.","Korean and Chinese experts stressed dialogue for peace and regional stability."],
+   long: ["Members of the Korea Aerospace Industries union rallied in Seoul, opposing Hanwha's management involvement. They called for independent management and a clear government position.","South Korea's defense minister and Japan's ambassador discussed security on the Korean Peninsula and in the region. Both sides agreed to maintain defense exchanges and communicate closely on shared issues.","Korean and Japanese business groups discussed joint responses to supply-chain uncertainty and changes in trade. They also explored ways to combine industrial strengths and seek new markets.","A Seoul event marking Hansik Day introduced traditional Korean dishes and food culture. Visitors explored cooking demonstrations and activities highlighting the cultural value and wider potential of Korean cuisine.","A citizen forum examined employment challenges linked to demographic change. Participants considered practical policy ideas for shared employment opportunities and lifelong work.","Experts from South Korea and China called for continued strategic dialogue to support peace on the Korean Peninsula. They also discussed easing tensions, economic cooperation, and people-to-people exchanges."],
    words: ["KAI union", "independence", "Hanwha", "defense ties", "security", "dialogue"]
   },
   ai: {
@@ -322,7 +322,7 @@ function getCurrentItems(){
  return bank[lang][mode];
 }
 
-let mode='movie', lang='ko', lengthMode='short', current=0, startedAt=null, interval=null, done=false, best=0, nextTimeout=null, ignoreCase=false, ignoreSpecial=false;
+let mode='movie', lang='ko', lengthMode='short', current=-1, startedAt=null, interval=null, done=false, best=0, nextTimeout=null, ignoreCase=false, ignoreSpecial=false;
 const $=id=>document.getElementById(id);
 
 function effectiveTarget(text){
@@ -521,7 +521,7 @@ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setM
 $('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('dark');const dark=document.body.classList.contains('dark');$('themeBtn').textContent=dark?'☀ Light':'☾ Dark';});
 
 try {
- updateLanguageUI();syncRuleButtons();loadQuote(false);
+ updateLanguageUI();syncRuleButtons();loadQuote(true);
 } catch (error) {
  console.error('type.ai initialization failed:', error);
  const stage=document.getElementById('typingStage');
