@@ -379,7 +379,7 @@ function updateLanguageUI(){
  $('typingInput').placeholder='';
  $('typingInput').setAttribute('aria-label','제시된 문장을 따라 입력하세요');
  $('wpm').parentElement.querySelector('label').textContent='WPM';
- $('accuracy').parentElement.querySelector('label').textContent='ACC';
+ $('accuracy').closest('.stat').querySelector('label').textContent='ACC';
  $('progress').parentElement.querySelector('label').textContent='PROG';
 }
 
