@@ -489,7 +489,8 @@ document.querySelectorAll('.length-option').forEach(b=>b.addEventListener('click
  $('typingInput').focus();
 }));
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));document.querySelectorAll('.lang').forEach(b=>b.addEventListener('click',()=>setLanguage(b.dataset.lang)));$('newBtn').addEventListener('click',()=>loadQuote(true));
-$('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('dark');const dark=document.body.classList.contains('dark');$('themeBtn').textContent=dark?'☀ Light':'☾ Dark';});$('typingStage').style.background='#fff';$('typingInput').style.background='transparent';$('typingGuide').style.color='#9ba4b5';document.querySelectorAll('.typed-correct').forEach(e=>e.style.color='#182032')}else{document.body.style.background='radial-gradient(ellipse at 75% 8%,#1b2340 0,transparent 34%),radial-gradient(ellipse at 0% 85%,#17162e 0,transparent 32%),var(--bg)';document.querySelectorAll('.practice,.card,.typing-stage').forEach(e=>{e.style.background='';e.style.color=''});$('typingStage').style.background='';$('typingInput').style.background='transparent';$('typingGuide').style.color='';document.querySelectorAll('.typed-correct').forEach(e=>e.style.color='')}});
+$('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('dark');const dark=document.body.classList.contains('dark');$('themeBtn').textContent=dark?'☀ Light':'☾ Dark';});
+
 try {
  updateLanguageUI();syncRuleButtons();loadQuote(false);
 } catch (error) {
