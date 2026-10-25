@@ -149,6 +149,35 @@ body.dark .stat strong{color:#d5dceb}
 body.dark .stat small{color:#7d8ba2}
 body.dark .toast{background:#202a3a;border-color:#3a4a64;color:white}
 
+
+/* Refined stats: align percentages with values and add hierarchy */
+.stats-heading{display:flex;align-items:center;justify-content:space-between;margin:23px 2px 10px;color:#464940;font-size:12px;font-weight:700;letter-spacing:.2px}
+.stats-live{display:flex;align-items:center;gap:6px;font:500 9px 'DM Mono',monospace;letter-spacing:1.1px;color:#979487}
+.stats-live i{display:block;width:6px;height:6px;border-radius:50%;background:#69a77c;box-shadow:0 0 0 3px #69a77c1b}
+.stats{gap:10px;margin-top:0}
+.stat{gap:5px;padding:13px 7px 11px;min-height:95px;box-shadow:0 2px 5px #554b3806;transition:background .2s,border-color .2s,transform .2s}
+.stat:hover{background:#fffdf7;border-color:#d8e0d4;transform:translateY(-1px)}
+.stat label{font-size:10px;letter-spacing:1.4px;color:#858176}
+.stat strong{font-size:21px;line-height:1.15;color:#30382f;letter-spacing:-.6px}
+.stat-value{display:flex;align-items:baseline;justify-content:center;gap:2px;line-height:1.15}
+.stat-value small{font-size:13px;font-weight:600;color:#73766a;font-family:'DM Mono',monospace}
+.stat-caption{font-size:10px;line-height:1.2;color:#a19b8e}
+.stats-progress{height:4px;margin:11px 2px 0;border-radius:20px;overflow:hidden;background:#ece7dd}
+.stats-progress-fill{width:0;height:100%;border-radius:20px;background:linear-gradient(90deg,#578568,#b4c9a8);transition:width .18s ease}
+body.dark .stats-heading{color:#e3e9f0}
+body.dark .stats-live{color:#8491a5}
+body.dark .stats-live i{background:#72e4bf;box-shadow:0 0 0 3px #72e4bf1b}
+body.dark .stat{background:#111722;border-color:#293244;box-shadow:none}
+body.dark .stat:hover{background:#171e2b;border-color:#45536a}
+body.dark .stat label{color:#7f8ba0}
+body.dark .stat strong{color:#f0f4fa}
+body.dark .stat-value small{color:#9ba8bc}
+body.dark .stat-caption{color:#7d8ba2}
+body.dark .stats-progress{background:#252d3b}
+body.dark .stats-progress-fill{background:linear-gradient(90deg,#72e4bf,#8bc5ff)}
+@media(max-width:900px){.stats-heading{margin-top:19px}.stats{gap:8px}.stat{padding:11px 5px}}
+@media(max-width:480px){.stats-heading{font-size:11px;margin:17px 1px 8px}.stats{gap:5px}.stat{min-height:82px;padding:9px 2px 8px;border-radius:11px;gap:4px}.stat strong{font-size:16px}.stat-value small{font-size:11px}.stat-caption{font-size:9px}.stats-progress{margin-top:8px}}
+
 </style>
 </head>
 <body>
@@ -176,7 +205,7 @@ body.dark .toast{background:#202a3a;border-color:#3a4a64;color:white}
 </div>
 <div class="typing-stage" id="typingStage"><div class="typing-guide" id="typingGuide" aria-hidden="true"><span class="typing-guide-content"><span class="untyped">밥은 먹고 다니냐?</span></span></div><textarea class="typing" id="typingInput" aria-label="제시된 문장을 따라 입력하세요" placeholder="" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea></div>
 <div class="typing-row"><span>◷ &nbsp; <span class="mono" id="timer">00:00</span></span><span><span class="mono" id="count">0</span> / <span class="mono" id="total">31</span> <span id="charLabel">자</span></span></div>
-<div class="stats" id="stats"><div class="stat"><label>WPM</label><strong id="wpm">0</strong></div><div class="stat"><label>CPM</label><strong id="cpm">0</strong></div><div class="stat"><label>ACC</label><strong id="accuracy">100</strong><small>%</small></div><div class="stat"><label>PROG</label><strong id="progress">0%</strong></div></div>
+<div class="stats-heading"><span>타이핑 기록</span><span class="stats-live"><i></i> LIVE</span></div><div class="stats" id="stats"><div class="stat"><label>WPM</label><strong id="wpm">0</strong><span class="stat-caption">단어/분</span></div><div class="stat"><label>CPM</label><strong id="cpm">0</strong><span class="stat-caption">글자/분</span></div><div class="stat"><label>ACC</label><div class="stat-value"><strong id="accuracy">100</strong><small>%</small></div><span class="stat-caption">정확도</span></div><div class="stat"><label>PROG</label><strong id="progress">0%</strong><span class="stat-caption">진행률</span></div></div><div class="stats-progress" aria-hidden="true"><div class="stats-progress-fill" id="statsProgressFill"></div></div>
 </div>
 </section>
 </main><div class="toast" id="toast"></div>
@@ -441,12 +470,12 @@ function renderNewsContext(){
  img.src=candidates[0];
 }
 
-function loadQuote(random=true){clearTimeout(nextTimeout);if(random)pickIndex();syncRuleButtons();renderNewsContext();const q=getCurrentItems()[current],target=effectiveTarget(q[0]);$('total').textContent=target.length;$('typingInput').value='';$('typingInput').disabled=false;$('typingStage').style.height='184px';$('typingStage').style.minHeight='184px';$('typingInput').style.height='184px';renderGuide('',target);layoutTypingStage();startedAt=null;done=false;clearInterval(interval);interval=null;$('timer').textContent='00:00';$('count').textContent='0';$('wpm').textContent='0';$('cpm').textContent='0';$('accuracy').textContent='100';$('progress').textContent='0%'}
+function loadQuote(random=true){clearTimeout(nextTimeout);if(random)pickIndex();syncRuleButtons();renderNewsContext();const q=getCurrentItems()[current],target=effectiveTarget(q[0]);$('total').textContent=target.length;$('typingInput').value='';$('typingInput').disabled=false;$('typingStage').style.height='184px';$('typingStage').style.minHeight='184px';$('typingInput').style.height='184px';renderGuide('',target);layoutTypingStage();startedAt=null;done=false;clearInterval(interval);interval=null;$('timer').textContent='00:00';$('count').textContent='0';$('wpm').textContent='0';$('cpm').textContent='0';$('accuracy').textContent='100';$('progress').textContent='0%';$('statsProgressFill').style.width='0%'}
 function setMode(next){mode=next;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));current=-1;loadQuote(true);showToast(({movie:'영화 대사를 선택했어요.',news:'뉴스 스타일 문장을 선택했어요.',ai:'랜덤 문장을 선택했어요.'}[mode]))}
 function setLanguage(next){if(lang===next)return;lang=next;current=-1;updateLanguageUI();loadQuote(true);}
 function elapsed(){return startedAt?Math.max(1,Math.floor((Date.now()-startedAt)/1000)):0}
 function tick(){let s=elapsed();$('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
-$('typingInput').addEventListener('input',()=>{if(done)return;const val=$('typingInput').value,target=effectiveTarget(getCurrentItems()[current][0]);if(val.length&&!startedAt){startedAt=Date.now();interval=setInterval(tick,250)}renderGuide(val,target);let correct=0;for(let i=0;i<Math.min(val.length,target.length);i++)if(charMatches(val[i],target[i]))correct++;const accuracy=val.length?Math.round(correct/val.length*100):100;const progress=Math.min(100,Math.round(val.length/target.length*100));$('count').textContent=val.length;$('accuracy').textContent=accuracy;$('progress').textContent=progress+'%';$('wpm').textContent=startedAt?Math.round((val.length/5)/((Date.now()-startedAt)/60000)):0;$('cpm').textContent=startedAt?Math.round(val.length/((Date.now()-startedAt)/60000)):0;layoutTypingStage();/* Do not advance immediately when the target is complete. */});
+$('typingInput').addEventListener('input',()=>{if(done)return;const val=$('typingInput').value,target=effectiveTarget(getCurrentItems()[current][0]);if(val.length&&!startedAt){startedAt=Date.now();interval=setInterval(tick,250)}renderGuide(val,target);let correct=0;for(let i=0;i<Math.min(val.length,target.length);i++)if(charMatches(val[i],target[i]))correct++;const accuracy=val.length?Math.round(correct/val.length*100):100;const progress=Math.min(100,Math.round(val.length/target.length*100));$('count').textContent=val.length;$('accuracy').textContent=accuracy;$('progress').textContent=progress+'%';$('statsProgressFill').style.width=progress+'%';$('wpm').textContent=startedAt?Math.round((val.length/5)/((Date.now()-startedAt)/60000)):0;$('cpm').textContent=startedAt?Math.round(val.length/((Date.now()-startedAt)/60000)):0;layoutTypingStage();/* Do not advance immediately when the target is complete. */});
 $('typingInput').addEventListener('keydown',e=>{
  if(done)return;
  const target=effectiveTarget(getCurrentItems()[current][0]);
@@ -470,7 +499,7 @@ $('typingInput').addEventListener('keydown',e=>{
   showToast(lang==='ko'?'문장을 끝까지 입력한 뒤 다음 키를 눌러주세요.':'Finish the sentence, then press another key to continue.');
  }
 });
-function finish(exact=false){if(done)return;done=true;clearInterval(interval);tick();$('typingInput').disabled=true;const val=$('typingInput').value,target=effectiveTarget(getCurrentItems()[current][0]);renderGuide(val,target);let correct=0;for(let i=0;i<Math.min(val.length,target.length);i++)if(charMatches(val[i],target[i]))correct++;const acc=val.length?Math.round(correct/val.length*100):0;const wpm=Math.round((val.length/5)/(Math.max(1,elapsed())/60));$('wpm').textContent=wpm;$('cpm').textContent=Math.round(val.length/(Math.max(1,Date.now()-startedAt)/60000));$('accuracy').textContent=acc;$('progress').textContent=Math.min(100,Math.round(val.length/target.length*100))+'%';nextTimeout=setTimeout(()=>{loadQuote(true);$('typingInput').focus()},exact?120:650)}
+function finish(exact=false){if(done)return;done=true;clearInterval(interval);tick();$('typingInput').disabled=true;const val=$('typingInput').value,target=effectiveTarget(getCurrentItems()[current][0]);renderGuide(val,target);let correct=0;for(let i=0;i<Math.min(val.length,target.length);i++)if(charMatches(val[i],target[i]))correct++;const acc=val.length?Math.round(correct/val.length*100):0;const wpm=Math.round((val.length/5)/(Math.max(1,elapsed())/60));$('wpm').textContent=wpm;$('cpm').textContent=Math.round(val.length/(Math.max(1,Date.now()-startedAt)/60000));$('accuracy').textContent=acc;const finalProgress=Math.min(100,Math.round(val.length/target.length*100));$('progress').textContent=finalProgress+'%';$('statsProgressFill').style.width=finalProgress+'%';nextTimeout=setTimeout(()=>{loadQuote(true);$('typingInput').focus()},exact?120:650)}
 function showToast(s){$('toast').textContent=s;$('toast').classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>$('toast').classList.remove('show'),2400)}
 
 $('ignoreCaseBtn').addEventListener('click',()=>{
