@@ -109,6 +109,33 @@ body.dark .segmented{border-color:#3b493c}
 @media(max-width:1050px){.work-grid{grid-template-columns:minmax(240px,.8fr) minmax(330px,1fr)}.art-panel,.art-panel img{min-height:380px}.shelf{grid-template-columns:repeat(5,minmax(0,1fr))}.workspace{padding:14px}.type-area{height:270px}}
 @media(max-width:760px){.topbar{height:auto;min-height:68px;gap:12px;flex-wrap:wrap;padding:13px 15px}.brand{gap:8px}.tagline{display:none}.top-actions{gap:5px}.pill{padding:7px 10px;font-size:11px}.shell{padding:16px 9px 30px}.workspace{padding:10px;border-radius:22px}.work-grid{grid-template-columns:1fr;gap:10px}.art-panel{min-height:0;aspect-ratio:1.7/1}.art-panel img{min-height:0}.practice-panel{padding:8px 4px 3px}.panel-head{align-items:flex-start}.mode-tabs{gap:2px}.mode-btn{padding:9px 10px;font-size:11px}.new-btn{padding:9px 10px;font-size:11px}.type-area{height:230px;min-height:210px;margin-top:12px}.typing-guide,.typing-input{font-size:20px;line-height:1.85;padding:18px 17px}.controls-row{gap:8px}.stats{gap:6px}.stat{padding:10px 3px;border-radius:12px}.stat-value strong{font-size:17px}.shelf{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.shelf-card span{padding:7px;font-size:9px}.shelf-head{margin-top:22px}.shelf-head p{display:none}}
 @media(max-width:420px){.mode-btn{padding:8px 8px}.mode-meta{display:none}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{min-height:78px}.shelf{grid-template-columns:repeat(3,minmax(0,1fr))}.art-panel{aspect-ratio:1.35/1}.type-area{height:220px}.control-label{font-size:10px}.seg{padding:7px 10px}}
+
+/* Background presets are page themes only; sentence illustrations remain content-specific. */
+.background-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 5px 13px;padding:0 2px}
+.background-title{font-size:11px;color:#8b877b;margin-right:4px}
+.bg-choice{display:inline-flex;align-items:center;gap:6px;border:1px solid #e4ddcf;border-radius:24px;padding:5px 9px 5px 6px;background:#fffefaab;color:#77776d;font-size:10px;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.bg-choice i{display:block;width:18px;height:18px;border-radius:50%;background:var(--swatch);border:1px solid #00000010;box-shadow:inset 0 0 0 1px #ffffff80}
+.bg-choice:hover{transform:translateY(-1px);border-color:#b9cbb8}
+.bg-choice.active{background:#fffefa;border-color:#8eb298;color:#315c43;box-shadow:0 2px 8px #477b6011}
+.bg-choice.active i{box-shadow:0 0 0 2px #d9e7d9,inset 0 0 0 1px #ffffff80}
+body[data-background="sage"]{background:radial-gradient(ellipse at 8% 4%,#dcead9 0,transparent 31%),radial-gradient(ellipse at 96% 75%,#eef0dc 0,transparent 31%),#eaf0e7}
+body[data-background="lavender"]{background:radial-gradient(ellipse at 8% 4%,#e8def8 0,transparent 31%),radial-gradient(ellipse at 96% 75%,#e4eafa 0,transparent 31%),#f0edf8}
+body[data-background="peach"]{background:radial-gradient(ellipse at 8% 4%,#f5d9c5 0,transparent 31%),radial-gradient(ellipse at 96% 75%,#f7e7d7 0,transparent 31%),#f7ece3}
+body[data-background="sky"]{background:radial-gradient(ellipse at 8% 4%,#d6e9f3 0,transparent 31%),radial-gradient(ellipse at 96% 75%,#e4ecec 0,transparent 31%),#eaf2f6}
+body[data-background="sage"] .workspace{background:#fbfdf9ee;border-color:#dce6d7}
+body[data-background="lavender"] .workspace{background:#fdfbffee;border-color:#e2dced}
+body[data-background="peach"] .workspace{background:#fffbf7ee;border-color:#ead9cb}
+body[data-background="sky"] .workspace{background:#fbfdffee;border-color:#d8e4eb}
+body[data-background="sage"] .type-area,body[data-background="sage"] .stat,body[data-background="sage"] .shelf-card{background:#f4f8f0;border-color:#e0e8da}
+body[data-background="lavender"] .type-area,body[data-background="lavender"] .stat,body[data-background="lavender"] .shelf-card{background:#f8f5fd;border-color:#e9e1f3}
+body[data-background="peach"] .type-area,body[data-background="peach"] .stat,body[data-background="peach"] .shelf-card{background:#fff7f0;border-color:#f0e3d6}
+body[data-background="sky"] .type-area,body[data-background="sky"] .stat,body[data-background="sky"] .shelf-card{background:#f5faff;border-color:#dfeaf0}
+body.dark .background-title{color:#a4ae9e}
+body.dark .bg-choice{background:#202b22;color:#c0cbb8;border-color:#3b493c}
+body.dark .bg-choice.active{background:#344f39;color:#eef5e9;border-color:#6d9b72}
+@media(max-width:760px){.background-bar{margin:0 2px 10px;gap:5px}.background-title{margin-right:1px}.bg-choice{padding:5px 8px 5px 5px;font-size:10px}}
+@media(max-width:420px){.background-bar{gap:4px}.bg-choice{gap:4px;padding:4px 6px 4px 4px}.bg-choice i{width:15px;height:15px}}
+
 </style>
 </head>
 <body>
@@ -121,6 +148,14 @@ body.dark .segmented{border-color:#3b493c}
  </div>
 </header>
 <main class="shell">
+ <div class="background-bar" aria-label="사이트 배경 선택">
+  <span class="background-title">배경</span>
+  <button class="bg-choice active" type="button" data-bg="cream" aria-label="크림 배경" title="크림"><i style="--swatch:#f5f2eb"></i><span>크림</span></button>
+  <button class="bg-choice" type="button" data-bg="sage" aria-label="세이지 배경" title="세이지"><i style="--swatch:#e7eee4"></i><span>세이지</span></button>
+  <button class="bg-choice" type="button" data-bg="lavender" aria-label="라벤더 배경" title="라벤더"><i style="--swatch:#eeebf8"></i><span>라벤더</span></button>
+  <button class="bg-choice" type="button" data-bg="peach" aria-label="피치 배경" title="피치"><i style="--swatch:#f7e8dc"></i><span>피치</span></button>
+  <button class="bg-choice" type="button" data-bg="sky" aria-label="하늘 배경" title="하늘"><i style="--swatch:#e5eff5"></i><span>하늘</span></button>
+ </div>
  <section class="workspace">
   <div class="work-grid">
    <div class="art-panel">
@@ -469,36 +504,74 @@ function generatedArt(sentence, category, size){
   ['#d6e8d6','#a0c69f','#537959','#f2d58e','#fff5df','#da9e9a']
  ];
  const p=palettes[Math.floor(rnd()*palettes.length)];
- const sky=p[0], mid=p[1], dark=p[2], sun=p[3], cream=p[4], accent=p[5];
+ const sky=p[0],mid=p[1],dark=p[2],sun=p[3],cream=p[4],accent=p[5],txt=String(sentence).toLowerCase();
  const sunX=130+Math.floor(rnd()*640),sunY=90+Math.floor(rnd()*170),sunR=38+Math.floor(rnd()*36);
- const hills1=[],hills2=[];
- for(let i=0;i<7;i++){hills1.push((i*160-80)+','+(300+Math.floor(rnd()*110)));hills2.push((i*160-80)+','+(390+Math.floor(rnd()*100)))}
- let stars='';
- for(let i=0;i<28;i++){const x=Math.floor(rnd()*900),y=Math.floor(rnd()*340),r=1+rnd()*2.7;stars+='<circle cx="'+x+'" cy="'+y+'" r="'+r.toFixed(1)+'" fill="'+cream+'" opacity="'+(.25+rnd()*.65).toFixed(2)+'"/>'}
- let clouds='';
- for(let i=0;i<4;i++){const x=Math.floor(rnd()*780),y=60+Math.floor(rnd()*130),w=40+Math.floor(rnd()*70);clouds+='<g opacity=".46" fill="'+cream+'"><ellipse cx="'+x+'" cy="'+y+'" rx="'+w+'" ry="'+(w*.23)+'"/><ellipse cx="'+(x+w*.45)+'" cy="'+(y-8)+'" rx="'+(w*.48)+'" ry="'+(w*.3)+'"/></g>'}
- let buildings='', windows='';
- for(let i=0;i<13;i++){const x=i*74-10,w=35+Math.floor(rnd()*24),hh=70+Math.floor(rnd()*190),y=425-hh;buildings+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+hh+'" rx="4" fill="'+dark+'" opacity="'+(.5+rnd()*.42).toFixed(2)+'"/>';for(let wy=y+14;wy<420;wy+=20){for(let wx=x+9;wx<x+w-4;wx+=14){if(rnd()>.36)windows+='<rect x="'+wx+'" y="'+wy+'" width="5" height="7" rx="1" fill="'+sun+'" opacity=".75"/>'}}}
- let trees='';
+ let stars='',clouds='',buildings='',windows='',trees='';
+ for(let i=0;i<26;i++){const x=Math.floor(rnd()*900),y=Math.floor(rnd()*330),r=1+rnd()*2.6;stars+='<circle cx="'+x+'" cy="'+y+'" r="'+r.toFixed(1)+'" fill="'+cream+'" opacity="'+(.25+rnd()*.65).toFixed(2)+'"/>'}
+ for(let i=0;i<4;i++){const x=Math.floor(rnd()*780),y=55+Math.floor(rnd()*135),w=38+Math.floor(rnd()*75);clouds+='<g opacity=".45" fill="'+cream+'"><ellipse cx="'+x+'" cy="'+y+'" rx="'+w+'" ry="'+(w*.23)+'"/><ellipse cx="'+(x+w*.45)+'" cy="'+(y-8)+'" rx="'+(w*.48)+'" ry="'+(w*.3)+'"/></g>'}
+ for(let i=0;i<13;i++){const x=i*74-10,w=35+Math.floor(rnd()*24),hh=70+Math.floor(rnd()*190),y=430-hh;buildings+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+hh+'" rx="4" fill="'+dark+'" opacity="'+(.5+rnd()*.42).toFixed(2)+'"/>';for(let wy=y+14;wy<420;wy+=20){for(let wx=x+9;wx<x+w-4;wx+=14){if(rnd()>.36)windows+='<rect x="'+wx+'" y="'+wy+'" width="5" height="7" rx="1" fill="'+sun+'" opacity=".75"/>'}}}
  for(let i=0;i<9;i++){const x=40+i*106+Math.floor(rnd()*28),y=445+Math.floor(rnd()*45),r=20+Math.floor(rnd()*25);trees+='<path d="M'+x+' '+(y+48)+' L'+x+' '+(y-5)+'" stroke="'+dark+'" stroke-width="7" stroke-linecap="round"/><circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+(i%2?mid:accent)+'" opacity=".85"/><circle cx="'+(x-12)+'" cy="'+(y-13)+'" r="'+(r*.55)+'" fill="'+cream+'" opacity=".15"/>'}
- let motif='';
- const txt=sentence.toLowerCase();
- if(category==='ai'||/인공지능|데이터|모델|알고리즘|ai |prompt|model|robot|생성형/.test(txt)){
-  let links='',nodes='';
-  const pts=[];for(let i=0;i<15;i++)pts.push([120+Math.floor(rnd()*660),100+Math.floor(rnd()*360)]);
-  for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){if(Math.abs(pts[i][0]-pts[j][0])<210&&rnd()>.68)links+='<line x1="'+pts[i][0]+'" y1="'+pts[i][1]+'" x2="'+pts[j][0]+'" y2="'+pts[j][1]+'" stroke="'+cream+'" stroke-width="2" opacity=".42"/>'}nodes+='<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="'+(4+rnd()*5)+'" fill="'+sun+'" stroke="'+cream+'" stroke-width="2"/>'}
-  motif='<g>'+links+'<circle cx="450" cy="295" r="105" fill="'+accent+'" opacity=".25"/><circle cx="450" cy="295" r="72" fill="'+cream+'" opacity=".78"/><rect x="398" y="252" width="104" height="84" rx="22" fill="'+dark+'"/><circle cx="425" cy="285" r="9" fill="'+sun+'"/><circle cx="475" cy="285" r="9" fill="'+sun+'"/><path d="M420 311 Q450 330 480 311" fill="none" stroke="'+cream+'" stroke-width="5" stroke-linecap="round"/><path d="M450 252 V230 M435 230 H465" stroke="'+dark+'" stroke-width="5" stroke-linecap="round"/>'+nodes+'</g>';
- } else if(category==='news'||/서울|도시|교통|공공|지역|회의|경제|학교|시민|기관|기업|재난|street|city|public|school|business|urban|agency/.test(txt)){
-  motif='<g>'+buildings+windows+'<path d="M0 480 Q160 440 300 475 T600 466 T900 474 V650 H0Z" fill="'+dark+'" opacity=".52"/><path d="M330 560 L450 465 L570 560" fill="none" stroke="'+cream+'" stroke-width="7" opacity=".6"/><rect x="390" y="495" width="120" height="100" rx="8" fill="'+cream+'" opacity=".9"/><rect x="410" y="516" width="80" height="11" rx="5" fill="'+accent+'"/><rect x="410" y="538" width="62" height="7" rx="3" fill="'+mid+'"/><rect x="410" y="553" width="70" height="7" rx="3" fill="'+mid+'"/><circle cx="450" cy="479" r="18" fill="'+sun+'"/></g>';
- } else if(category==='movie'||/영화|극장|형사|장면|배우|기차|편지|극장|무대|cinema|detective|scene|actor|train|letter|stage|film/.test(txt)){
-  motif='<g><path d="M90 475 L210 300 L330 475 Z" fill="'+dark+'" opacity=".6"/><path d="M560 475 L690 275 L820 475 Z" fill="'+dark+'" opacity=".53"/><rect x="245" y="205" width="410" height="250" rx="14" fill="'+cream+'" opacity=".82"/><rect x="265" y="225" width="370" height="210" rx="8" fill="'+dark+'" opacity=".9"/><circle cx="'+(350+Math.floor(rnd()*200))+'" cy="'+(285+Math.floor(rnd()*70))+'" r="48" fill="'+accent+'" opacity=".88"/><path d="M285 405 Q390 330 468 405 T615 396" stroke="'+mid+'" stroke-width="25" fill="none" stroke-linecap="round"/><path d="M285 410 Q380 390 460 420 T615 410" stroke="'+sun+'" stroke-width="8" fill="none" opacity=".85"/><rect x="220" y="455" width="460" height="18" rx="9" fill="'+dark+'"/></g>';
- } else if(/바다|파도|해양|여행|물결|sea|ocean|wave|shore|travel/.test(txt)){
-  motif='<g><path d="M0 355 Q130 310 250 360 T500 352 T900 350 V650 H0Z" fill="'+mid+'"/><path d="M0 425 Q125 390 250 435 T500 430 T900 420 V650 H0Z" fill="'+dark+'" opacity=".72"/><path d="M0 492 Q100 463 220 500 T480 500 T900 487" stroke="'+cream+'" stroke-width="8" fill="none" opacity=".7"/><path d="M0 548 Q110 522 230 550 T490 555 T900 545" stroke="'+sun+'" stroke-width="5" fill="none" opacity=".8"/><path d="M610 390 Q660 330 710 390 L660 410Z" fill="'+cream+'" opacity=".8"/><path d="M660 410 V360" stroke="'+dark+'" stroke-width="6"/></g>';
- } else {
-  motif='<g><path d="M0 470 Q190 425 330 475 T600 472 T900 464 V650 H0Z" fill="'+mid+'"/><path d="M0 520 Q160 475 320 520 T630 514 T900 517 V650 H0Z" fill="'+dark+'" opacity=".6"/>'+trees+'<rect x="555" y="350" width="200" height="142" rx="9" fill="'+cream+'" opacity=".86"/><rect x="574" y="370" width="162" height="99" rx="5" fill="'+sky+'"/><path d="M575 452 L618 407 L653 439 L686 396 L735 453Z" fill="'+mid+'"/><circle cx="690" cy="393" r="15" fill="'+sun+'"/><rect x="600" y="477" width="110" height="13" rx="6" fill="'+accent+'"/></g>';
+ let scene='landscape',motif='';
+ // Match the main visual to the sentence topic first; the category is only a fallback.
+ if(/비|폭우|빗물|폭염|집중호우|재난|rain|storm|flood|rainy|weather alert/.test(txt))scene='rain';
+ else if(/편지|사진|수첩|기억|가족|letter|photograph|photo|notebook|memory|family/.test(txt))scene='memory';
+ else if(/식당|주방|주문|요리|음식|가게|restaurant|kitchen|order|cooking|food|diner/.test(txt))scene='food';
+ else if(/바다|파도|해양|해안|녹음|ocean|sea|wave|shore|marine|recording/.test(txt))scene='ocean';
+ else if(/기차|역|플랫폼|버스|출발|정류장|train|station|platform|bus stop|departing/.test(txt))scene='transport';
+ else if(/극장|무대|배우|공연|관객|영화관|cinema|stage|actor|performance|audience|screening/.test(txt))scene='stage';
+ else if(/인공지능|알고리즘|프롬프트|생성형|모델|데이터|ai |prompt|model|robot|algorithm|dataset|automation|generative/.test(txt))scene='ai';
+ else if(/의료|병원|진료|의료 영상|medical|hospital|clinician|health care|imaging/.test(txt))scene='medical';
+ else if(/배터리|전력|에너지|충전|battery|energy|power|charging/.test(txt))scene='energy';
+ else if(/횡단보도|보행|자전거|대중교통|거리 정비|pedestrian|crosswalk|bike|public transit|street safety/.test(txt))scene='street';
+ else if(/학교|도서관|학생|학습|수업|education|school|library|student|learning|lesson/.test(txt))scene='learning';
+ else if(/개인정보|보안|안전|잠금|privacy|security|protection|secure|lock/.test(txt))scene='security';
+ else if(/농업|농장|물 사용|관개|farm|agriculture|irrigation|water use/.test(txt))scene='farm';
+ else if(/기후|환경|숲|나무|녹지|친환경|climate|environment|forest|tree|green space|eco-friendly/.test(txt))scene='nature';
+ else if(/경제|시장|공급망|기업|무역|신시장|business|market|supply chain|trade|company|industry/.test(txt))scene='business';
+ else if(/추격|형사|골목|용의자|수사|추적|detective|alley|chase|clue|investigation|witness/.test(txt))scene='mystery';
+ else if(category==='ai')scene='ai';
+ else if(category==='news')scene='business';
+ else if(category==='movie')scene='stage';
+ if(scene==='rain'){
+  let drops='';for(let i=0;i<90;i++){const x=Math.floor(rnd()*900),y=Math.floor(rnd()*650);drops+='<path d="M'+x+' '+y+' l-7 17" stroke="'+cream+'" stroke-width="2" opacity="'+(.16+rnd()*.38).toFixed(2)+'"/>'}
+  motif='<g>'+buildings+windows+'<path d="M0 482 Q180 445 360 480 T720 470 T900 483 V650 H0Z" fill="'+dark+'" opacity=".8"/><path d="M150 535 L250 535 L290 650 L110 650Z" fill="'+cream+'" opacity=".18"/><circle cx="450" cy="360" r="70" fill="'+accent+'" opacity=".24"/><path d="M400 380 Q450 310 500 380" stroke="'+sun+'" stroke-width="12" stroke-linecap="round" fill="none"/>'+drops+'</g>';
+ }else if(scene==='memory'){
+  motif='<g transform="rotate(-7 450 330)"><rect x="250" y="175" width="400" height="290" rx="12" fill="'+dark+'" opacity=".2"/><rect x="265" y="160" width="370" height="280" rx="7" fill="'+cream+'"/><rect x="283" y="178" width="334" height="194" rx="4" fill="'+sky+'"/><circle cx="515" cy="225" r="33" fill="'+sun+'" opacity=".9"/><path d="M285 344 L365 255 L430 316 L492 266 L615 350 V370 H285Z" fill="'+mid+'"/><path d="M285 350 L372 300 L450 341 L510 290 L615 352 V370 H285Z" fill="'+dark+'" opacity=".55"/><rect x="292" y="391" width="235" height="7" rx="3" fill="'+accent+'"/><rect x="292" y="408" width="300" height="6" rx="3" fill="'+mid+'"/></g><circle cx="680" cy="180" r="42" fill="'+sun+'" opacity=".25"/>';
+ }else if(scene==='food'){
+  motif='<g><path d="M0 480 Q220 435 450 470 T900 465 V650 H0Z" fill="'+dark+'" opacity=".4"/><rect x="130" y="300" width="640" height="180" rx="12" fill="'+cream+'" opacity=".6"/><rect x="150" y="320" width="600" height="130" rx="9" fill="'+sky+'" opacity=".7"/><path d="M120 468 H780" stroke="'+dark+'" stroke-width="16" stroke-linecap="round"/><ellipse cx="450" cy="390" rx="120" ry="54" fill="'+cream+'"/><ellipse cx="450" cy="383" rx="96" ry="39" fill="'+accent+'"/><circle cx="420" cy="370" r="20" fill="'+sun+'"/><circle cx="466" cy="385" r="18" fill="'+mid+'"/><circle cx="490" cy="365" r="13" fill="'+dark+'"/><path d="M240 310 V235 Q240 200 275 200 Q310 200 310 235 V310" fill="'+cream+'" opacity=".75"/><path d="M275 200 V178" stroke="'+cream+'" stroke-width="7" stroke-linecap="round"/></g>';
+ }else if(scene==='ocean'){
+  motif='<g><path d="M0 325 Q125 285 250 335 T500 328 T900 330 V650 H0Z" fill="'+mid+'"/><path d="M0 390 Q125 352 250 400 T500 390 T900 387 V650 H0Z" fill="'+dark+'" opacity=".7"/><path d="M0 465 Q100 438 220 470 T480 470 T900 457" stroke="'+cream+'" stroke-width="9" fill="none" opacity=".7"/><path d="M0 525 Q110 495 230 530 T490 535 T900 520" stroke="'+sun+'" stroke-width="5" fill="none" opacity=".8"/><rect x="610" y="350" width="92" height="70" rx="9" fill="'+cream+'"/><circle cx="656" cy="385" r="22" fill="'+accent+'"/><rect x="640" y="430" width="32" height="8" rx="4" fill="'+dark+'"/></g>';
+ }else if(scene==='transport'){
+  motif='<g><rect x="105" y="280" width="690" height="185" rx="22" fill="'+cream+'" opacity=".9"/><rect x="125" y="300" width="650" height="120" rx="15" fill="'+accent+'"/><g fill="'+sky+'"><rect x="148" y="317" width="95" height="66" rx="9"/><rect x="258" y="317" width="95" height="66" rx="9"/><rect x="368" y="317" width="95" height="66" rx="9"/><rect x="478" y="317" width="95" height="66" rx="9"/><rect x="588" y="317" width="95" height="66" rx="9"/></g><circle cx="235" cy="441" r="27" fill="'+dark+'"/><circle cx="665" cy="441" r="27" fill="'+dark+'"/><circle cx="235" cy="441" r="10" fill="'+cream+'"/><circle cx="665" cy="441" r="10" fill="'+cream+'"/><path d="M50 510 H850 M130 545 H770" stroke="'+cream+'" stroke-width="5" stroke-dasharray="25 18" opacity=".8"/></g>';
+ }else if(scene==='stage'){
+  motif='<g><path d="M70 150 Q170 310 70 485 L225 485 Q285 315 225 150Z" fill="'+accent+'" opacity=".8"/><path d="M830 150 Q730 310 830 485 L675 485 Q615 315 675 150Z" fill="'+accent+'" opacity=".8"/><rect x="220" y="165" width="460" height="315" rx="8" fill="'+cream+'" opacity=".9"/><rect x="244" y="190" width="412" height="270" rx="4" fill="'+dark+'"/><path d="M260 440 L390 245 L500 440Z" fill="'+mid+'" opacity=".8"/><path d="M420 190 L560 440 L430 440Z" fill="'+accent+'" opacity=".65"/><circle cx="445" cy="310" r="34" fill="'+sun+'"/><path d="M410 365 Q450 330 490 365 L515 440 H385Z" fill="'+cream+'" opacity=".85"/><rect x="185" y="474" width="530" height="18" rx="9" fill="'+dark+'"/></g>';
+ }else if(scene==='ai'){
+  let links='',nodes='';const pts=[];for(let i=0;i<16;i++)pts.push([100+Math.floor(rnd()*700),100+Math.floor(rnd()*380)]);
+  for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){if(Math.abs(pts[i][0]-pts[j][0])<220&&rnd()>.67)links+='<line x1="'+pts[i][0]+'" y1="'+pts[i][1]+'" x2="'+pts[j][0]+'" y2="'+pts[j][1]+'" stroke="'+cream+'" stroke-width="2" opacity=".45"/>'}nodes+='<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="'+(5+rnd()*5)+'" fill="'+sun+'" stroke="'+cream+'" stroke-width="2"/>'}
+  motif='<g>'+links+'<circle cx="450" cy="305" r="117" fill="'+accent+'" opacity=".23"/><circle cx="450" cy="305" r="75" fill="'+cream+'" opacity=".9"/><rect x="398" y="263" width="104" height="84" rx="22" fill="'+dark+'"/><circle cx="425" cy="293" r="9" fill="'+sun+'"/><circle cx="475" cy="293" r="9" fill="'+sun+'"/><path d="M420 321 Q450 337 480 321" fill="none" stroke="'+cream+'" stroke-width="5" stroke-linecap="round"/><path d="M450 263 V239 M435 239 H465" stroke="'+dark+'" stroke-width="5" stroke-linecap="round"/>'+nodes+'</g>';
+ }else if(scene==='medical'){
+  motif='<g><rect x="145" y="170" width="610" height="340" rx="20" fill="'+cream+'" opacity=".86"/><rect x="175" y="200" width="265" height="280" rx="14" fill="'+sky+'"/><circle cx="307" cy="340" r="78" fill="'+accent+'" opacity=".6"/><circle cx="307" cy="340" r="47" fill="'+mid+'"/><path d="M307 275 V405 M242 340 H372" stroke="'+cream+'" stroke-width="11" stroke-linecap="round"/><rect x="475" y="220" width="225" height="22" rx="11" fill="'+mid+'"/><rect x="475" y="267" width="175" height="12" rx="6" fill="'+accent+'"/><rect x="475" y="295" width="200" height="12" rx="6" fill="'+mid+'"/><rect x="475" y="323" width="150" height="12" rx="6" fill="'+mid+'"/></g>';
+ }else if(scene==='energy'){
+  motif='<g><rect x="195" y="220" width="500" height="250" rx="28" fill="'+cream+'" opacity=".88"/><rect x="238" y="270" width="420" height="152" rx="17" fill="'+dark+'"/><rect x="658" y="315" width="34" height="62" rx="6" fill="'+dark+'"/><rect x="258" y="290" width="82" height="112" rx="9" fill="'+accent+'"/><rect x="350" y="290" width="82" height="112" rx="9" fill="'+sun+'"/><rect x="442" y="290" width="82" height="112" rx="9" fill="'+mid+'"/><path d="M565 290 L530 352 H570 L545 402 L615 330 H575 L602 290Z" fill="'+cream+'"/></g>';
+ }else if(scene==='street'){
+  motif='<g><path d="M0 500 L300 340 H600 L900 500 V650 H0Z" fill="'+dark+'" opacity=".7"/><path d="M410 650 L430 480 H470 L490 650Z" fill="'+cream+'" opacity=".7"/><path d="M150 500 L180 488 L215 546 L185 558Z M245 455 L275 443 L310 501 L280 514Z M590 455 L620 443 L655 501 L625 514Z" fill="'+cream+'"/><rect x="320" y="235" width="260" height="110" rx="15" fill="'+cream+'" opacity=".8"/><rect x="345" y="258" width="210" height="15" rx="7" fill="'+accent+'"/><rect x="345" y="286" width="160" height="10" rx="5" fill="'+mid+'"/></g>';
+ }else if(scene==='learning'){
+  motif='<g><rect x="160" y="180" width="580" height="330" rx="18" fill="'+cream+'" opacity=".85"/><rect x="185" y="210" width="245" height="260" rx="9" fill="'+dark+'"/><rect x="202" y="228" width="210" height="224" rx="4" fill="'+mid+'"/><path d="M215 260 H395 M215 290 H365 M215 320 H390 M215 350 H355 M215 380 H395" stroke="'+cream+'" stroke-width="8" stroke-linecap="round" opacity=".8"/><rect x="468" y="245" width="225" height="15" rx="7" fill="'+accent+'"/><rect x="468" y="282" width="180" height="10" rx="5" fill="'+mid+'"/><rect x="468" y="308" width="200" height="10" rx="5" fill="'+mid+'"/><rect x="468" y="362" width="105" height="75" rx="9" fill="'+sun+'"/></g>';
+ }else if(scene==='security'){
+  motif='<g><path d="M450 150 L625 215 V340 Q605 445 450 510 Q295 445 275 340 V215Z" fill="'+cream+'" opacity=".85"/><path d="M450 185 L590 235 V337 Q570 415 450 465 Q330 415 310 337 V235Z" fill="'+mid+'"/><rect x="390" y="300" width="120" height="95" rx="17" fill="'+dark+'"/><path d="M414 302 V275 Q414 240 450 240 Q486 240 486 275 V302" fill="none" stroke="'+cream+'" stroke-width="13"/><circle cx="450" cy="340" r="11" fill="'+sun+'"/><path d="M450 350 V370" stroke="'+sun+'" stroke-width="10" stroke-linecap="round"/></g>';
+ }else if(scene==='farm'){
+  motif='<g><path d="M0 350 Q180 315 340 365 T650 350 T900 360 V650 H0Z" fill="'+mid+'"/><path d="M0 425 Q180 385 340 435 T650 425 T900 430 V650 H0Z" fill="'+dark+'" opacity=".5"/>'+Array.from({length:9},(_,i)=>'<path d="M'+(i*120-20)+' 650 Q'+(i*120+30)+' 540 '+(i*120+80)+' 450" stroke="'+cream+'" stroke-width="5" fill="none" opacity=".8"/>').join('')+'<rect x="570" y="270" width="95" height="105" rx="8" fill="'+cream+'"/><rect x="590" y="290" width="55" height="28" rx="5" fill="'+accent+'"/><path d="M617 375 V440" stroke="'+dark+'" stroke-width="8"/></g>';
+ }else if(scene==='nature'){
+  motif='<g>'+trees+'<path d="M0 505 Q140 445 290 505 T590 490 T900 505 V650 H0Z" fill="'+dark+'" opacity=".48"/><circle cx="710" cy="210" r="60" fill="'+sun+'" opacity=".72"/><path d="M100 500 L260 270 L420 500Z M360 500 L540 245 L720 500Z" fill="'+mid+'" opacity=".7"/><path d="M190 370 L260 270 L330 370 L285 353 L260 375 L235 353Z M465 330 L540 245 L615 330 L570 312 L540 335 L510 312Z" fill="'+cream+'" opacity=".82"/></g>';
+ }else if(scene==='business'){
+  motif='<g>'+buildings+windows+'<path d="M110 475 L290 390 L430 420 L590 300 L785 335" fill="none" stroke="'+cream+'" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="290" cy="390" r="16" fill="'+sun+'" stroke="'+cream+'" stroke-width="5"/><circle cx="430" cy="420" r="16" fill="'+accent+'" stroke="'+cream+'" stroke-width="5"/><circle cx="590" cy="300" r="16" fill="'+sun+'" stroke="'+cream+'" stroke-width="5"/><rect x="120" y="510" width="660" height="42" rx="12" fill="'+cream+'" opacity=".55"/></g>';
+ }else if(scene==='mystery'){
+  let rain='';for(let i=0;i<55;i++){const x=Math.floor(rnd()*900),y=Math.floor(rnd()*500);rain+='<path d="M'+x+' '+y+' l-5 13" stroke="'+cream+'" stroke-width="2" opacity=".22"/>'}
+  motif='<g>'+buildings+windows+'<path d="M260 650 L375 425 L430 425 L340 650Z" fill="'+sun+'" opacity=".23"/><circle cx="450" cy="405" r="46" fill="'+dark+'"/><path d="M415 455 Q450 427 485 455 L515 555 H385Z" fill="'+dark+'"/><circle cx="450" cy="405" r="28" fill="'+accent+'"/><path d="M415 480 L375 540 M485 480 L525 540" stroke="'+dark+'" stroke-width="18" stroke-linecap="round"/>'+rain+'</g>';
+ }else{
+  motif='<g><path d="M0 470 Q190 425 330 475 T600 472 T900 464 V650 H0Z" fill="'+mid+'"/><path d="M0 520 Q160 475 320 520 T630 514 T900 517 V650 H0Z" fill="'+dark+'" opacity=".6"/>'+trees+'<rect x="555" y="350" width="200" height="142" rx="9" fill="'+cream+'" opacity=".86"/><rect x="574" y="370" width="162" height="99" rx="5" fill="'+sky+'"/><path d="M575 452 L618 407 L653 439 L686 396 L735 453Z" fill="'+mid+'"/><circle cx="690" cy="393" r="15" fill="'+sun+'"/></g>';
  }
- let unique='';
- for(let i=0;i<11;i++){const x=Math.floor(rnd()*900),y=Math.floor(rnd()*650),r=5+Math.floor(rnd()*25);unique+='<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+(i%2?cream:accent)+'" opacity="'+(.06+rnd()*.16).toFixed(2)+'"/>'}
+ let unique='';for(let i=0;i<12;i++){const x=Math.floor(rnd()*900),y=Math.floor(rnd()*650),r=5+Math.floor(rnd()*24);unique+='<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+(i%2?cream:accent)+'" opacity="'+(.05+rnd()*.14).toFixed(2)+'"/>'}
  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650"><defs><linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+sky+'"/><stop offset="1" stop-color="'+mid+'"/></linearGradient><linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+cream+'" stop-opacity=".6"/><stop offset="1" stop-color="'+cream+'" stop-opacity="0"/></linearGradient></defs><rect width="900" height="650" fill="url(#sky)"/><circle cx="'+sunX+'" cy="'+sunY+'" r="'+(sunR*1.8)+'" fill="url(#glow)"/><circle cx="'+sunX+'" cy="'+sunY+'" r="'+sunR+'" fill="'+sun+'" opacity=".92"/>'+clouds+stars+'<path d="M0 375 Q'+(110+Math.floor(rnd()*80))+' 285 250 365 T520 355 T900 330 V650 H0Z" fill="'+mid+'" opacity=".85"/><path d="M0 445 Q155 375 290 445 T570 430 T900 445 V650 H0Z" fill="'+dark+'" opacity=".38"/>'+motif+unique+'<rect x="16" y="16" width="868" height="618" rx="24" fill="none" stroke="'+cream+'" stroke-opacity=".4" stroke-width="2"/></svg>';
  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
 }
@@ -569,6 +642,19 @@ el('newSentence').addEventListener('click',nextSentence);
 el('langKo').addEventListener('click',()=>selectLanguage('ko'));
 el('langEn').addEventListener('click',()=>selectLanguage('en'));
 el('themeToggle').addEventListener('click',()=>{document.body.classList.toggle('dark');el('themeToggle').textContent=document.body.classList.contains('dark')?'☾':'☼'});
+
+function applyBackground(name,save=true){
+ const allowed=['cream','sage','lavender','peach','sky'];
+ const chosen=allowed.includes(name)?name:'cream';
+ document.body.dataset.background=chosen;
+ document.body.classList.remove('dark');
+ el('themeToggle').textContent='☼';
+ document.querySelectorAll('.bg-choice').forEach(b=>b.classList.toggle('active',b.dataset.bg===chosen));
+ if(save){try{localStorage.setItem('typeai-background',chosen)}catch(e){}}
+}
+document.querySelectorAll('.bg-choice').forEach(b=>b.addEventListener('click',()=>applyBackground(b.dataset.bg)));
+try{applyBackground(localStorage.getItem('typeai-background')||'cream',false)}catch(e){applyBackground('cream',false)}
+
 el('ignoreCase').addEventListener('click',()=>{ignoreCase=!ignoreCase;el('ignoreCase').classList.toggle('active',ignoreCase);el('ignoreCase').setAttribute('aria-pressed',String(ignoreCase));showToast(ignoreCase?'영어 대소문자 구분을 무시해.':'대소문자를 구분해.');loadQuote(false);el('typingInput').focus()});
 el('ignorePunctuation').addEventListener('click',()=>{ignorePunctuation=!ignorePunctuation;el('ignorePunctuation').classList.toggle('active',ignorePunctuation);el('ignorePunctuation').setAttribute('aria-pressed',String(ignorePunctuation));showToast(ignorePunctuation?'특수문자를 생략해.':'특수문자 입력을 적용해.');loadQuote(false);el('typingInput').focus()});
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='enter'){e.preventDefault();nextSentence()}});
