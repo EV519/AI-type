@@ -25,6 +25,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
+      - name: Assemble movie scene image atlas
+        run: |
+          mkdir -p images
+          cat .github/assets/movie-scenes.part*.b64 | base64 --decode > images/movie-scenes-grid.webp
+          test -s images/movie-scenes-grid.webp
+          rm -rf .github/assets
       - name: Upload site files
         uses: actions/upload-pages-artifact@v3
         with:

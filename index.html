@@ -80,7 +80,7 @@ button{font:inherit}
 .shelf-card{padding:0;overflow:hidden;border:1px solid #e8e1d5;border-radius:14px;background:#fffefa;color:#434a40;text-align:left;cursor:pointer;min-width:0;transition:transform .18s,border-color .18s,box-shadow .18s}
 .shelf-card:hover,.shelf-card.selected{transform:translateY(-2px);border-color:#a9c4ad;box-shadow:0 8px 20px #51432a0d}
 .shelf-card.selected{outline:2px solid #c6dcc8;outline-offset:0}
-.shelf-card img{display:block;width:100%;aspect-ratio:1.55/1;object-fit:cover;background:#ece5d7}
+.shelf-card .shelf-art{display:block;position:relative;width:100%;aspect-ratio:1.55/1;background-color:#18232d;background-repeat:no-repeat;overflow:hidden}
 .shelf-card span{display:block;padding:9px 9px 10px;font-size:10px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mode-note{font-size:10px;color:#aaa396;margin:15px 4px 0;line-height:1.7}
 .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,14px);opacity:0;pointer-events:none;background:#263b2e;color:white;border-radius:24px;padding:11px 17px;font-size:12px;box-shadow:0 12px 28px #2437282b;transition:.2s;z-index:10}.toast.show{opacity:1;transform:translate(-50%,0)}
@@ -143,6 +143,10 @@ body.dark .bg-choice.active{background:#344f39;color:#eef5e9;border-color:#6d9b7
 @media(max-width:1050px){.art-panel img{min-height:380px}}
 @media(max-width:760px){.art-panel img{min-height:0}}
 
+/* One cinematic AI scene per movie sentence (20 short + 12 long). */
+.art-panel .hero-art{position:absolute;inset:0;width:100%;height:100%;min-height:420px;background-color:#18232d;background-repeat:no-repeat;transition:opacity .25s ease;will-change:background-position}
+@media(max-width:760px){.art-panel .hero-art{min-height:0}}
+
 </style>
 </head>
 <body>
@@ -166,7 +170,7 @@ body.dark .bg-choice.active{background:#344f39;color:#eef5e9;border-color:#6d9b7
  <section class="workspace">
   <div class="work-grid">
    <div class="art-panel">
-    <img id="heroArt" alt="현재 문장의 장면을 표현한 일러스트">
+    <div id="heroArt" class="hero-art" role="img" aria-label="현재 영화 문장에 어울리는 AI 장면"></div>
    </div>
    <div class="practice-panel">
     <div class="panel-head">
@@ -581,30 +585,33 @@ function generatedArt(sentence, category, size){
  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+sky+'"/><stop offset=".55" stop-color="'+mid+'"/><stop offset="1" stop-color="'+dark+'"/></linearGradient><radialGradient id="light"><stop stop-color="'+sun+'" stop-opacity=".64"/><stop offset="1" stop-color="'+sun+'" stop-opacity="0"/></radialGradient><linearGradient id="vignette" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111820" stop-opacity=".04"/><stop offset=".5" stop-color="#111820" stop-opacity="0"/><stop offset="1" stop-color="#111820" stop-opacity=".38"/></linearGradient><filter id="soft"><feGaussianBlur stdDeviation="22"/></filter></defs><rect width="900" height="650" fill="url(#bg)"/><circle cx="'+sx+'" cy="'+sy+'" r="190" fill="url(#light)"/>'+clouds+stars+'<path d="M0 365 Q140 280 290 360 T590 355 T900 325 V650 H0Z" fill="'+mid+'" opacity=".58"/><path d="M0 445 Q150 375 300 445 T600 432 T900 445 V650 H0Z" fill="'+dark+'" opacity=".22"/>'+motif+grain.join('')+'<rect width="900" height="650" fill="url(#vignette)"/><rect x="12" y="12" width="876" height="626" rx="26" fill="none" stroke="'+cream+'" stroke-opacity=".34" stroke-width="2"/></svg>';
  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
 }
-function sceneImageForSentence(sentence, category=mode){
- const s=String(sentence);
- if(category==='movie' && /한밤중의 전화|전화 한 통|전화가 울리|전화벨/.test(s)){
-  return {src:'./images/movie-phone-call.webp',alt:'비 오는 밤, 창가에서 전화를 받는 인물의 영화풍 장면'};
- }
- if(category==='movie' && /비 내리는 골목|형사|추격|경찰차|잠복 수사|수사/.test(s)){
-  return {src:'./images/movie-rain-alley.webp',alt:'비 내리는 도심 골목의 영화풍 장면'};
- }
- return null;
+function movieSceneIndex(index,length=lengthMode){
+ if(length==='short')return Math.max(0,Math.min(19,index));
+ if(length==='long')return 20+Math.max(0,Math.min(11,index));
+ return -1;
 }
-function imageSourceForSentence(sentence, category=mode, index=0){
- const matched=sceneImageForSentence(sentence,category);
- return matched?matched.src:generatedArt(sentence,category,index);
+function applyPracticeArt(node,sentence,category,index,length=lengthMode){
+ node.style.backgroundRepeat='no-repeat';
+ if(category==='movie' && length!=='words'){
+  const scene=movieSceneIndex(index,length),col=scene%8,row=Math.floor(scene/8);
+  node.style.backgroundImage="url('./images/movie-scenes-grid.webp')";
+  node.style.backgroundSize='800% 400%';
+  node.style.backgroundPosition=(col/7*100)+'% '+(row/3*100)+'%';
+  node.style.backgroundColor='#18232d';
+  node.dataset.scene=String(scene+1);
+  return;
+ }
+ node.style.backgroundImage='url("'+generatedArt(sentence,category,index)+'")';
+ node.style.backgroundSize='cover';
+ node.style.backgroundPosition='center';
+ node.style.backgroundColor='#e9e2d4';
 }
 function updateImage(sentence){
  const art=el('heroArt');
- const matched=sceneImageForSentence(sentence,mode);
- art.style.opacity='.35';
- const nextSrc=matched?matched.src:generatedArt(sentence,mode,current);
- const nextAlt=matched?matched.alt:'문장 내용에 맞춘 장면 일러스트';
- const reveal=()=>{art.alt=nextAlt;art.style.opacity='1'};
- art.onload=reveal;
- art.src=nextSrc;
- if(art.complete)reveal();
+ art.style.opacity='.2';
+ applyPracticeArt(art,sentence,mode,current,lengthMode);
+ art.setAttribute('aria-label',mode==='movie'?'영화 연습 문장 '+(current+1)+'번의 AI 장면':'문장 내용에 맞춘 장면 일러스트');
+ requestAnimationFrame(()=>{art.style.opacity='1'});
 }
 function updateMeta(){el('sentenceCount').textContent=String(current+1).padStart(2,'0')+' / '+String(list().length).padStart(2,'0');}
 function renderShelf(){
@@ -615,9 +622,10 @@ function renderShelf(){
  for(let i=0;i<count;i++){
   const idx=(start+i)%arr.length, s=arr[idx], card=document.createElement('button');
   card.type='button';card.className='shelf-card'+(idx===current?' selected':'');
-  const img=document.createElement('img');img.alt='';img.loading='lazy';img.src=imageSourceForSentence(s,mode,idx);
+  const art=document.createElement('div');art.className='shelf-art';art.setAttribute('aria-hidden','true');
+  applyPracticeArt(art,s,mode,idx,lengthMode);
   const label=document.createElement('span');label.textContent=s;
-  card.appendChild(img);card.appendChild(label);card.addEventListener('click',()=>loadAt(idx));
+  card.appendChild(art);card.appendChild(label);card.addEventListener('click',()=>loadAt(idx));
   shelf.appendChild(card);
  }
 }
@@ -690,6 +698,7 @@ el('ignorePunctuation').addEventListener('click',()=>{ignorePunctuation=!ignoreP
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='enter'){e.preventDefault();nextSentence()}});
 window.addEventListener('resize',()=>layoutText());
 el('typingInput').addEventListener('paste',e=>e.preventDefault());
+const movieSceneAtlasPreload=new Image();movieSceneAtlasPreload.src='./images/movie-scenes-grid.webp';
 document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='movie'));current=9;loadQuote(false);
 </script>
 </body>
