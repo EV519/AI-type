@@ -136,6 +136,13 @@ body.dark .bg-choice.active{background:#344f39;color:#eef5e9;border-color:#6d9b7
 @media(max-width:760px){.background-bar{margin:0 2px 10px;gap:5px}.background-title{margin-right:1px}.bg-choice{padding:5px 8px 5px 5px;font-size:10px}}
 @media(max-width:420px){.background-bar{gap:4px}.bg-choice{gap:4px;padding:4px 6px 4px 4px}.bg-choice i{width:15px;height:15px}}
 
+
+/* Cinematic scene image: clean edge-to-edge photo, no labels */
+.art-panel{overflow:hidden;background:#171b1b}
+.art-panel img{width:100%;height:100%;min-height:420px;object-fit:cover;object-position:center;display:block;transform:scale(1.035)}
+@media(max-width:1050px){.art-panel img{min-height:380px}}
+@media(max-width:760px){.art-panel img{min-height:0}}
+
 </style>
 </head>
 <body>
@@ -160,7 +167,6 @@ body.dark .bg-choice.active{background:#344f39;color:#eef5e9;border-color:#6d9b7
   <div class="work-grid">
    <div class="art-panel">
     <img id="heroArt" alt="현재 문장의 장면을 표현한 일러스트">
-    <div class="art-shade" aria-hidden="true"></div>
    </div>
    <div class="practice-panel">
     <div class="panel-head">
@@ -171,7 +177,7 @@ body.dark .bg-choice.active{background:#344f39;color:#eef5e9;border-color:#6d9b7
      </div>
      <button class="new-btn" id="newSentence">⟳ 다른 문장</button>
     </div>
-    <div class="mode-meta"><span id="modeDescription">영화 장면에서 영감을 받은 창작 문장</span><span class="current-count" id="sentenceCount">01 / 15</span></div>
+    <div class="mode-meta"><span class="current-count" id="sentenceCount">01 / 20</span></div>
     <div class="type-area" id="typeArea">
      <div class="typing-guide" id="typingGuide" aria-hidden="true"><div class="typing-guide-content"><span class="untyped">한 문장씩 천천히 입력하며 리듬을 만들어 보자.</span></div></div>
      <textarea id="typingInput" class="typing-input" aria-label="제시된 문장을 입력하세요" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
@@ -575,8 +581,13 @@ function generatedArt(sentence, category, size){
  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+sky+'"/><stop offset=".55" stop-color="'+mid+'"/><stop offset="1" stop-color="'+dark+'"/></linearGradient><radialGradient id="light"><stop stop-color="'+sun+'" stop-opacity=".64"/><stop offset="1" stop-color="'+sun+'" stop-opacity="0"/></radialGradient><linearGradient id="vignette" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111820" stop-opacity=".04"/><stop offset=".5" stop-color="#111820" stop-opacity="0"/><stop offset="1" stop-color="#111820" stop-opacity=".38"/></linearGradient><filter id="soft"><feGaussianBlur stdDeviation="22"/></filter></defs><rect width="900" height="650" fill="url(#bg)"/><circle cx="'+sx+'" cy="'+sy+'" r="190" fill="url(#light)"/>'+clouds+stars+'<path d="M0 365 Q140 280 290 360 T590 355 T900 325 V650 H0Z" fill="'+mid+'" opacity=".58"/><path d="M0 445 Q150 375 300 445 T600 432 T900 445 V650 H0Z" fill="'+dark+'" opacity=".22"/>'+motif+grain.join('')+'<rect width="900" height="650" fill="url(#vignette)"/><rect x="12" y="12" width="876" height="626" rx="26" fill="none" stroke="'+cream+'" stroke-opacity=".34" stroke-width="2"/></svg>';
  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
 }
-function updateImage(sentence){el('heroArt').src=generatedArt(sentence,mode,0);el('heroArt').alt='문장 기반 자동 생성 일러스트';}
-function updateMeta(){el('sentenceCount').textContent=String(current+1).padStart(2,'0')+' / '+String(list().length).padStart(2,'0');el('modeDescription').textContent=modeDescriptions[mode];}
+function updateImage(sentence){
+ const art=el('heroArt');
+ const isRainyMovieScene=mode==='movie' && /^비 내리는 골목/.test(sentence);
+ art.src=isRainyMovieScene?'./images/movie-rain-alley.webp':generatedArt(sentence,mode,0);
+ art.alt=isRainyMovieScene?'비 내리는 골목에서 단서를 살피는 형사의 영화풍 장면':'문장 내용에 맞춘 장면 일러스트';
+}
+function updateMeta(){el('sentenceCount').textContent=String(current+1).padStart(2,'0')+' / '+String(list().length).padStart(2,'0');}
 function renderShelf(){
  const arr=list(),shelf=el('sentenceShelf');shelf.innerHTML='';
  const count=Math.min(7,arr.length);
@@ -660,7 +671,7 @@ el('ignorePunctuation').addEventListener('click',()=>{ignorePunctuation=!ignoreP
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='enter'){e.preventDefault();nextSentence()}});
 window.addEventListener('resize',()=>layoutText());
 el('typingInput').addEventListener('paste',e=>e.preventDefault());
-selectMode('movie');
+document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='movie'));current=0;loadQuote(false);
 </script>
 </body>
 </html>
