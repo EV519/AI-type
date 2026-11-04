@@ -581,11 +581,30 @@ function generatedArt(sentence, category, size){
  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+sky+'"/><stop offset=".55" stop-color="'+mid+'"/><stop offset="1" stop-color="'+dark+'"/></linearGradient><radialGradient id="light"><stop stop-color="'+sun+'" stop-opacity=".64"/><stop offset="1" stop-color="'+sun+'" stop-opacity="0"/></radialGradient><linearGradient id="vignette" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111820" stop-opacity=".04"/><stop offset=".5" stop-color="#111820" stop-opacity="0"/><stop offset="1" stop-color="#111820" stop-opacity=".38"/></linearGradient><filter id="soft"><feGaussianBlur stdDeviation="22"/></filter></defs><rect width="900" height="650" fill="url(#bg)"/><circle cx="'+sx+'" cy="'+sy+'" r="190" fill="url(#light)"/>'+clouds+stars+'<path d="M0 365 Q140 280 290 360 T590 355 T900 325 V650 H0Z" fill="'+mid+'" opacity=".58"/><path d="M0 445 Q150 375 300 445 T600 432 T900 445 V650 H0Z" fill="'+dark+'" opacity=".22"/>'+motif+grain.join('')+'<rect width="900" height="650" fill="url(#vignette)"/><rect x="12" y="12" width="876" height="626" rx="26" fill="none" stroke="'+cream+'" stroke-opacity=".34" stroke-width="2"/></svg>';
  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
 }
+function sceneImageForSentence(sentence, category=mode){
+ const s=String(sentence);
+ if(category==='movie' && /한밤중의 전화|전화 한 통|전화가 울리|전화벨/.test(s)){
+  return {src:'./images/movie-phone-call.webp',alt:'비 오는 밤, 창가에서 전화를 받는 인물의 영화풍 장면'};
+ }
+ if(category==='movie' && /비 내리는 골목|형사|추격|경찰차|잠복 수사|수사/.test(s)){
+  return {src:'./images/movie-rain-alley.webp',alt:'비 내리는 도심 골목의 영화풍 장면'};
+ }
+ return null;
+}
+function imageSourceForSentence(sentence, category=mode, index=0){
+ const matched=sceneImageForSentence(sentence,category);
+ return matched?matched.src:generatedArt(sentence,category,index);
+}
 function updateImage(sentence){
  const art=el('heroArt');
- const isRainyMovieScene=mode==='movie' && /^비 내리는 골목/.test(sentence);
- art.src=isRainyMovieScene?'./images/movie-rain-alley.webp':generatedArt(sentence,mode,0);
- art.alt=isRainyMovieScene?'비 내리는 골목에서 단서를 살피는 형사의 영화풍 장면':'문장 내용에 맞춘 장면 일러스트';
+ const matched=sceneImageForSentence(sentence,mode);
+ art.style.opacity='.35';
+ const nextSrc=matched?matched.src:generatedArt(sentence,mode,current);
+ const nextAlt=matched?matched.alt:'문장 내용에 맞춘 장면 일러스트';
+ const reveal=()=>{art.alt=nextAlt;art.style.opacity='1'};
+ art.onload=reveal;
+ art.src=nextSrc;
+ if(art.complete)reveal();
 }
 function updateMeta(){el('sentenceCount').textContent=String(current+1).padStart(2,'0')+' / '+String(list().length).padStart(2,'0');}
 function renderShelf(){
@@ -596,7 +615,7 @@ function renderShelf(){
  for(let i=0;i<count;i++){
   const idx=(start+i)%arr.length, s=arr[idx], card=document.createElement('button');
   card.type='button';card.className='shelf-card'+(idx===current?' selected':'');
-  const img=document.createElement('img');img.alt='';img.loading='lazy';img.src=generatedArt(s,mode,idx);
+  const img=document.createElement('img');img.alt='';img.loading='lazy';img.src=imageSourceForSentence(s,mode,idx);
   const label=document.createElement('span');label.textContent=s;
   card.appendChild(img);card.appendChild(label);card.addEventListener('click',()=>loadAt(idx));
   shelf.appendChild(card);
@@ -671,7 +690,7 @@ el('ignorePunctuation').addEventListener('click',()=>{ignorePunctuation=!ignoreP
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='enter'){e.preventDefault();nextSentence()}});
 window.addEventListener('resize',()=>layoutText());
 el('typingInput').addEventListener('paste',e=>e.preventDefault());
-document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='movie'));current=0;loadQuote(false);
+document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='movie'));current=9;loadQuote(false);
 </script>
 </body>
 </html>
