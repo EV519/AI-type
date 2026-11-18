@@ -33,7 +33,7 @@ jobs:
           rm -rf .github/assets
       - name: AI super-resolution of original movie artwork
         run: |
-          python -m pip install --quiet opencv-contrib-python-headless==4.10.0.84
+          python -m pip install --quiet opencv-contrib-python-headless==4.10.0.84 Pillow
           curl -L --fail --retry 3 -o EDSR_x2.pb https://github.com/Saafke/EDSR_Tensorflow/raw/master/models/EDSR_x2.pb
           python - <<'PY'
           import cv2
