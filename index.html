@@ -40,12 +40,12 @@ button{font:inherit}
 .current-count{font-family:'DM Mono',monospace;color:#9a9487}
 .type-area{margin-top:14px;border:1px solid #e5ded2;border-radius:20px;background:linear-gradient(145deg,#fffefa,#fbfaf6);height:280px;min-height:240px;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s}
 .type-area:focus-within{border-color:#afc7b1;box-shadow:0 0 0 3px #477b600d}
-.typing-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:left;padding:28px clamp(18px,3vw,38px);font-family:'Noto Sans KR',sans-serif;font-size:clamp(19px,1.65vw,27px);line-height:1.95;letter-spacing:-.45px;color:#a8a79c;pointer-events:none;user-select:none;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}
-.typing-guide-content{display:block;width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}
+.typing-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:left;padding:28px clamp(18px,3vw,38px);box-sizing:border-box;font-family:'Noto Sans KR',sans-serif;font-size:clamp(19px,1.65vw,27px);line-height:1.95;letter-spacing:-.45px;color:#a8a79c;pointer-events:none;user-select:none;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}
+.typing-guide-content{display:block;width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;tab-size:4}
 .typed-correct{color:#2d4936;font-weight:600}.typed-wrong{color:#c24f4f;text-decoration:underline;text-decoration-color:#c24f4f55;text-underline-offset:4px}.untyped{color:#b8b6ad}
 .typing-guide-content span{white-space:inherit}.custom-caret{display:inline-block;position:relative;width:2px;height:.9em;vertical-align:-.08em;background:var(--green);border-radius:2px;margin:0 1px;animation:blink 1s steps(2,start) infinite}
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
-.typing-input{position:relative;z-index:2;width:100%;height:100%;min-height:100%;display:block;resize:none;overflow:hidden;border:0;outline:0;border-radius:20px;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:transparent;padding:28px clamp(18px,3vw,38px);font-family:'Noto Sans KR',sans-serif;font-size:clamp(19px,1.65vw,27px);line-height:1.95;letter-spacing:-.45px;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;box-shadow:none}
+.typing-input{position:relative;z-index:2;width:100%;height:100%;min-height:100%;display:block;resize:none;overflow:hidden;box-sizing:border-box;border:0;outline:0;border-radius:20px;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:transparent;padding:28px clamp(18px,3vw,38px);font-family:'Noto Sans KR',sans-serif;font-size:clamp(19px,1.65vw,27px);line-height:1.95;letter-spacing:-.45px;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;tab-size:4;box-shadow:none}
 .input-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 3px 0;color:#979183;font-size:11px}
 .mono{font-family:'DM Mono',monospace}
 .controls-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:13px}
@@ -485,17 +485,28 @@ function makeDeck(){
  current=d.pop();decks.set(key,d);return current;
 }
 function targetText(s){return ignorePunctuation?Array.from(s).filter(ch=>!/[\p{P}\p{S}]/u.test(ch)).join(''):s}
+function textUnits(value){
+ const text=String(value??'');
+ if(typeof Intl!=='undefined' && Intl.Segmenter){
+  const segmenter=new Intl.Segmenter(lang==='ko'?'ko':'en',{granularity:'grapheme'});
+  return Array.from(segmenter.segment(text),item=>item.segment);
+ }
+ return Array.from(text);
+}
 function matches(a,b){return ignoreCase?a.toLocaleLowerCase()===b.toLocaleLowerCase():a===b}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function renderGuide(val,target){
- const typedChars=Array.from(val),targetChars=Array.from(target);
- let out='',n=Math.max(typedChars.length,targetChars.length);
- for(let i=0;i<=n;i++){
-  if(i===typedChars.length)out+='<span class="custom-caret" aria-hidden="true"></span>';
-  if(i===n)break;
-  const typed=i<typedChars.length,typedChar=typedChars[i],targetChar=targetChars[i];
-  const ch=typed?typedChar:targetChar;
-  const cls=typed?(matches(typedChar,targetChar)?'typed-correct':'typed-wrong'):'untyped';
+ const typedChars=textUnits(val),targetChars=textUnits(target);
+ const input=el('typingInput');
+ const cursorIndex=textUnits(input.value.slice(0,input.selectionStart??input.value.length)).length;
+ const count=Math.max(typedChars.length,targetChars.length);
+ let out='';
+ for(let i=0;i<=count;i++){
+  if(i===cursorIndex)out+='<span class="custom-caret" aria-hidden="true"></span>';
+  if(i===count)break;
+  const hasTyped=i<typedChars.length,typedChar=typedChars[i],targetChar=targetChars[i];
+  const ch=hasTyped?typedChar:targetChar;
+  const cls=hasTyped?(matches(typedChar,targetChar)?'typed-correct':'typed-wrong'):'untyped';
   out+='<span class="'+cls+'">'+esc(ch)+'</span>';
  }
  el('typingGuide').innerHTML='<div class="typing-guide-content">'+out+'</div>';
@@ -643,7 +654,7 @@ function loadQuote(random){
  const arr=list();if(current<0||current>=arr.length)current=0;
  const raw=arr[current],target=targetText(raw);
  updateImage(raw);updateMeta();renderShelf();
- el('totalCount').textContent=target.length;
+ el('totalCount').textContent=textUnits(target).length;
  el('typingInput').value='';el('typingInput').disabled=false;
  renderGuide('',target);layoutText();resetMetrics();
 }
@@ -653,7 +664,7 @@ function selectLanguage(l){lang=l;el('langKo').classList.toggle('active',l==='ko
 function elapsed(){return startedAt?Math.max(1,Math.floor((Date.now()-startedAt)/1000)):0}
 function updateTimer(){const s=elapsed();el('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function updateStats(){
- const val=el('typingInput').value,target=targetText(list()[current]);let correct=0;
+ const val=textUnits(el('typingInput').value),target=textUnits(targetText(list()[current]));let correct=0;
  for(let i=0;i<Math.min(val.length,target.length);i++)if(matches(val[i],target[i]))correct++;
  const prog=Math.min(100,Math.round(val.length/Math.max(1,target.length)*100)),acc=val.length?Math.round(correct/val.length*100):100;
  el('charCount').textContent=val.length;el('accuracy').textContent=acc;el('progress').textContent=prog;el('progressFill').style.width=prog+'%';
@@ -663,28 +674,43 @@ function updateStats(){
 function showToast(s){el('toast').textContent=s;el('toast').classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>el('toast').classList.remove('show'),1800)}
 function refreshTypingView(){
  if(done)return;
- const val=el('typingInput').value,target=targetText(list()[current]);
+ const input=el('typingInput'),val=input.value,target=targetText(list()[current]);
  if(val.length&&!startedAt){startedAt=Date.now();interval=setInterval(updateTimer,250)}
  renderGuide(val,target);updateStats();layoutText();
 }
 el('typingInput').addEventListener('compositionstart',()=>{composing=true});
+el('typingInput').addEventListener('compositionupdate',()=>{
+ // Show the in-progress Korean syllable in the overlay without changing the textarea.
+ const input=el('typingInput');
+ renderGuide(input.value,targetText(list()[current]));
+});
 el('typingInput').addEventListener('compositionend',()=>{
  composing=false;
  refreshTypingView();
 });
 el('typingInput').addEventListener('input',()=>{
- // Korean IME emits temporary syllable fragments while composing.
- // Wait for compositionend so the overlay never replaces committed text mid-keystroke.
  if(composing)return;
  refreshTypingView();
+});
+el('typingInput').addEventListener('click',()=>{
+ const input=el('typingInput');
+ renderGuide(input.value,targetText(list()[current]));
+});
+el('typingInput').addEventListener('keyup',e=>{
+ if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){
+  const input=el('typingInput');
+  renderGuide(input.value,targetText(list()[current]));
+ }
 });
 el('typingInput').addEventListener('keydown',e=>{
  if(composing||e.isComposing||e.keyCode===229)return;
  if(e.ctrlKey||e.metaKey||e.altKey)return;
  if(e.key==='Tab'){e.preventDefault();return}
  if(e.key==='Escape'){e.preventDefault();nextSentence();return}
- const val=el('typingInput').value,target=targetText(list()[current]);
- if(val.length>=target.length && !['Shift','Control','Alt','Meta'].includes(e.key)){
+ const editOrNav=['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Shift','Control','Alt','Meta'];
+ const input=el('typingInput'),val=textUnits(input.value),target=textUnits(targetText(list()[current]));
+ const advances=e.key==='Enter'||e.key===' '||e.key==='Spacebar'||e.key.length===1;
+ if(val.length>=target.length&&advances&&!editOrNav.includes(e.key)){
   e.preventDefault();nextSentence();
  }
 });
