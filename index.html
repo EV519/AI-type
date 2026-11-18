@@ -625,7 +625,7 @@ function applyPracticeArt(node,sentence,category,index,length=lengthMode){
  node.style.backgroundRepeat='no-repeat';
  if(category==='movie' && length!=='words'){
   const scene=movieSceneIndex(index,length),col=scene%8,row=Math.floor(scene/8);
-  node.style.backgroundImage="url('./images/movie-scenes-grid.svg')";
+  node.style.backgroundImage="url('./images/movie-scenes-grid.png')";
   node.style.backgroundSize='800% 400%';
   node.style.backgroundPosition=(col/7*100)+'% '+(row/3*100)+'%';
   node.style.backgroundColor='#18232d';
@@ -758,7 +758,7 @@ el('ignorePunctuation').addEventListener('click',()=>{ignorePunctuation=!ignoreP
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='enter'){e.preventDefault();nextSentence()}});
 window.addEventListener('resize',()=>layoutText());
 el('typingInput').addEventListener('paste',e=>e.preventDefault());
-const movieSceneAtlasPreload=new Image();movieSceneAtlasPreload.src='./images/movie-scenes-grid.svg';
+const movieSceneAtlasPreload=new Image();movieSceneAtlasPreload.src='./images/movie-scenes-grid.png';
 document.querySelectorAll('.mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode==='movie'));current=9;loadQuote(false);
 </script>
 </body>
