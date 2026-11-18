@@ -495,19 +495,35 @@ function textUnits(value){
 }
 function matches(a,b){return ignoreCase?a.toLocaleLowerCase()===b.toLocaleLowerCase():a===b}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function alignTypedText(value,target){
+ const typedChars=textUnits(value),targetChars=textUnits(target);
+ const tokens=[];
+ let targetIndex=0,correct=0;
+ for(const typedChar of typedChars){
+  const expected=targetChars[targetIndex];
+  // An accidental space is shown as an error, but does not consume the next
+  // prompt character. This keeps the expected character visible and aligned.
+  const extraSpace=typedChar===' ' && expected!==undefined && expected!==' ';
+  const isCorrect=!extraSpace && expected!==undefined && matches(typedChar,expected);
+  tokens.push({char:typedChar,correct:isCorrect,extraSpace});
+  if(isCorrect)correct++;
+  if(!extraSpace && expected!==undefined)targetIndex++;
+ }
+ return {typedChars,targetChars,tokens,targetIndex,correct};
+}
 function renderGuide(val,target){
- const typedChars=textUnits(val),targetChars=textUnits(target);
+ const aligned=alignTypedText(val,target);
  const input=el('typingInput');
  const cursorIndex=textUnits(input.value.slice(0,input.selectionStart??input.value.length)).length;
- const count=Math.max(typedChars.length,targetChars.length);
  let out='';
- for(let i=0;i<=count;i++){
+ for(let i=0;i<=aligned.tokens.length;i++){
   if(i===cursorIndex)out+='<span class="custom-caret" aria-hidden="true"></span>';
-  if(i===count)break;
-  const hasTyped=i<typedChars.length,typedChar=typedChars[i],targetChar=targetChars[i];
-  const ch=hasTyped?typedChar:targetChar;
-  const cls=hasTyped?(matches(typedChar,targetChar)?'typed-correct':'typed-wrong'):'untyped';
-  out+='<span class="'+cls+'">'+esc(ch)+'</span>';
+  if(i===aligned.tokens.length)break;
+  const token=aligned.tokens[i];
+  out+='<span class="'+(token.correct?'typed-correct':'typed-wrong')+'">'+esc(token.char)+'</span>';
+ }
+ for(let i=aligned.targetIndex;i<aligned.targetChars.length;i++){
+  out+='<span class="untyped">'+esc(aligned.targetChars[i])+'</span>';
  }
  el('typingGuide').innerHTML='<div class="typing-guide-content">'+out+'</div>';
 }
@@ -664,12 +680,13 @@ function selectLanguage(l){lang=l;el('langKo').classList.toggle('active',l==='ko
 function elapsed(){return startedAt?Math.max(1,Math.floor((Date.now()-startedAt)/1000)):0}
 function updateTimer(){const s=elapsed();el('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function updateStats(){
- const val=textUnits(el('typingInput').value),target=textUnits(targetText(list()[current]));let correct=0;
- for(let i=0;i<Math.min(val.length,target.length);i++)if(matches(val[i],target[i]))correct++;
- const prog=Math.min(100,Math.round(val.length/Math.max(1,target.length)*100)),acc=val.length?Math.round(correct/val.length*100):100;
- el('charCount').textContent=val.length;el('accuracy').textContent=acc;el('progress').textContent=prog;el('progressFill').style.width=prog+'%';
+ const inputChars=textUnits(el('typingInput').value),target=targetText(list()[current]);
+ const aligned=alignTypedText(el('typingInput').value,target);
+ const prog=Math.min(100,Math.round(aligned.targetIndex/Math.max(1,aligned.targetChars.length)*100));
+ const acc=inputChars.length?Math.round(aligned.correct/inputChars.length*100):100;
+ el('charCount').textContent=inputChars.length;el('accuracy').textContent=acc;el('progress').textContent=prog;el('progressFill').style.width=prog+'%';
  const mins=startedAt?Math.max((Date.now()-startedAt)/60000,.0167):0;
- el('wpm').textContent=mins?Math.round((val.length/5)/mins):0;el('cpm').textContent=mins?Math.round(val.length/mins):0;
+ el('wpm').textContent=mins?Math.round((inputChars.length/5)/mins):0;el('cpm').textContent=mins?Math.round(inputChars.length/mins):0;
 }
 function showToast(s){el('toast').textContent=s;el('toast').classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>el('toast').classList.remove('show'),1800)}
 function refreshTypingView(){
@@ -709,9 +726,9 @@ el('typingInput').addEventListener('keydown',e=>{
  if(e.key==='Tab'){e.preventDefault();return}
  if(e.key==='Escape'){e.preventDefault();nextSentence();return}
  const editOrNav=['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Shift','Control','Alt','Meta'];
- const input=el('typingInput'),val=textUnits(input.value),target=textUnits(targetText(list()[current]));
+ const input=el('typingInput'),val=textUnits(input.value),target=targetText(list()[current]);
  const advances=e.key==='Enter'||e.key===' '||e.key==='Spacebar'||e.key.length===1;
- if(val.length>=target.length&&advances&&!editOrNav.includes(e.key)){
+ if(alignTypedText(input.value,target).targetIndex>=textUnits(target).length&&advances&&!editOrNav.includes(e.key)){
   e.preventDefault();nextSentence();
  }
 });
