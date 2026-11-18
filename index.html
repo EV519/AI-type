@@ -43,7 +43,7 @@ button{font:inherit}
 .typing-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:left;padding:28px clamp(18px,3vw,38px);font-family:'Noto Sans KR',sans-serif;font-size:clamp(19px,1.65vw,27px);line-height:1.95;letter-spacing:-.45px;color:#a8a79c;pointer-events:none;user-select:none;white-space:pre-wrap;overflow-wrap:anywhere;word-break:keep-all}
 .typing-guide-content{display:block;width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:keep-all}
 .typed-correct{color:#2d4936;font-weight:600}.typed-wrong{color:#c24f4f;text-decoration:underline;text-decoration-color:#c24f4f55;text-underline-offset:4px}.untyped{color:#b8b6ad}
-.custom-caret{display:inline-block;position:relative;width:0;height:1.1em;vertical-align:-.15em;border-left:2px solid var(--green);margin-left:-1px;margin-right:-1px;animation:blink 1s steps(2,start) infinite}
+.typing-guide-content span{white-space:pre}.custom-caret{display:inline-block;position:relative;width:2px;height:.9em;vertical-align:-.08em;background:var(--green);border-radius:2px;margin:0 1px;animation:blink 1s steps(2,start) infinite}
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 .typing-input{position:relative;z-index:2;width:100%;height:100%;min-height:100%;display:block;resize:none;overflow:hidden;border:0;outline:0;border-radius:20px;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:transparent;padding:28px clamp(18px,3vw,38px);font-family:'Noto Sans KR',sans-serif;font-size:clamp(19px,1.65vw,27px);line-height:1.95;letter-spacing:-.45px;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;word-break:keep-all;box-shadow:none}
 .input-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 3px 0;color:#979183;font-size:11px}
@@ -468,7 +468,7 @@ words:["generative model","prompt design","data quality","model evaluation","ima
 }
 };
 
-let mode='movie', lang='ko', lengthMode='short', current=-1, startedAt=null, interval=null, done=false, ignoreCase=false, ignorePunctuation=false, fontSize=23;
+let mode='movie', lang='ko', lengthMode='short', current=-1, startedAt=null, interval=null, done=false, ignoreCase=false, ignorePunctuation=false, fontSize=23, composing=false;
 const el=id=>document.getElementById(id);
 const decks=new Map();
 const modeNames={movie:'영화 장면',news:'뉴스',ai:'AI 랜덤'};
@@ -488,11 +488,14 @@ function targetText(s){return ignorePunctuation?Array.from(s).filter(ch=>!/[\p{P
 function matches(a,b){return ignoreCase?a.toLocaleLowerCase()===b.toLocaleLowerCase():a===b}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function renderGuide(val,target){
- let out='',n=Math.max(val.length,target.length);
+ const typedChars=Array.from(val),targetChars=Array.from(target);
+ let out='',n=Math.max(typedChars.length,targetChars.length);
  for(let i=0;i<=n;i++){
-  if(i===val.length)out+='<span class="custom-caret"></span>';
+  if(i===typedChars.length)out+='<span class="custom-caret" aria-hidden="true"></span>';
   if(i===n)break;
-  const typed=i<val.length, ch=typed?val[i]:target[i], cls=typed?(matches(val[i],target[i])?'typed-correct':'typed-wrong'):'untyped';
+  const typed=i<typedChars.length,typedChar=typedChars[i],targetChar=targetChars[i];
+  const ch=typed?typedChar:targetChar;
+  const cls=typed?(matches(typedChar,targetChar)?'typed-correct':'typed-wrong'):'untyped';
   out+='<span class="'+cls+'">'+esc(ch)+'</span>';
  }
  el('typingGuide').innerHTML='<div class="typing-guide-content">'+out+'</div>';
@@ -658,13 +661,25 @@ function updateStats(){
  el('wpm').textContent=mins?Math.round((val.length/5)/mins):0;el('cpm').textContent=mins?Math.round(val.length/mins):0;
 }
 function showToast(s){el('toast').textContent=s;el('toast').classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>el('toast').classList.remove('show'),1800)}
-el('typingInput').addEventListener('input',()=>{
+function refreshTypingView(){
  if(done)return;
  const val=el('typingInput').value,target=targetText(list()[current]);
  if(val.length&&!startedAt){startedAt=Date.now();interval=setInterval(updateTimer,250)}
  renderGuide(val,target);updateStats();layoutText();
+}
+el('typingInput').addEventListener('compositionstart',()=>{composing=true});
+el('typingInput').addEventListener('compositionend',()=>{
+ composing=false;
+ refreshTypingView();
+});
+el('typingInput').addEventListener('input',()=>{
+ // Korean IME emits temporary syllable fragments while composing.
+ // Wait for compositionend so the overlay never replaces committed text mid-keystroke.
+ if(composing)return;
+ refreshTypingView();
 });
 el('typingInput').addEventListener('keydown',e=>{
+ if(composing||e.isComposing||e.keyCode===229)return;
  if(e.ctrlKey||e.metaKey||e.altKey)return;
  if(e.key==='Tab'){e.preventDefault();return}
  if(e.key==='Escape'){e.preventDefault();nextSentence();return}
