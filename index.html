@@ -689,7 +689,8 @@ el('typingInput').addEventListener('compositionend',()=>{
  refreshTypingView();
 });
 el('typingInput').addEventListener('input',()=>{
- if(composing)return;
+ // The textarea value already contains the current in-progress Hangul syllable.
+ // Render every input event, including IME composition, so feedback is immediate.
  refreshTypingView();
 });
 el('typingInput').addEventListener('click',()=>{
